@@ -17,7 +17,7 @@ export default function GameOver({ state, actions }) {
 
   return (
     <div
-      className="hue-card transition-all duration-500"
+      className="hue-card transition-all duration-500 overflow-y-auto"
       style={{ opacity: visible ? 1 : 0 }}
     >
       {/* Top bar */}
@@ -27,7 +27,7 @@ export default function GameOver({ state, actions }) {
       </div>
 
       {/* Winner message */}
-      <div className="px-6 mb-4">
+      <div className="px-6 mb-6">
         <h2 className="text-4xl font-bold text-white">
           {isWinner ? 'you won 🎉' : 'game over'}
         </h2>
@@ -38,8 +38,71 @@ export default function GameOver({ state, actions }) {
         </p>
       </div>
 
+      {/* Round history — word + colour strips */}
+      {state.roundHistory.length > 0 && (
+        <div className="px-6 mb-6">
+          <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">all rounds</p>
+          <div className="flex flex-col gap-4">
+            {state.roundHistory.map((round, i) => {
+              const avgHex = hsbToHex(round.average.h, round.average.s, round.average.b)
+              return (
+                <div key={i}>
+                  <p className="text-gray-500 text-xs mb-2 font-mono">
+                    {i + 1}. {round.word}
+                  </p>
+                  <div className="flex gap-1.5">
+                    {Object.entries(round.submissions).map(([name, colour]) => {
+                      const playerHex = hsbToHex(colour.h, colour.s, colour.b)
+                      const score = round.scores[name] ?? 0
+                      return (
+                        <div
+                          key={name}
+                          className="flex-1 rounded-xl overflow-hidden"
+                          style={{ minHeight: 80 }}
+                        >
+                          {/* Player colour — top */}
+                          <div
+                            className="relative flex items-start justify-between p-2"
+                            style={{ backgroundColor: playerHex, height: 52 }}
+                          >
+                            <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                              {score}
+                            </span>
+                            {/* Diagonal cut */}
+                            <svg
+                              className="absolute bottom-0 left-0 w-full"
+                              viewBox="0 0 100 20"
+                              preserveAspectRatio="none"
+                              style={{ height: 16 }}
+                            >
+                              <polygon points="0,20 100,0 100,20" fill={avgHex} />
+                            </svg>
+                          </div>
+                          {/* Group average — bottom */}
+                          <div
+                            className="flex items-end p-2"
+                            style={{ backgroundColor: avgHex, height: 36 }}
+                          >
+                            <span
+                              className="text-xs truncate"
+                              style={{ color: 'rgba(255,255,255,0.7)' }}
+                            >
+                              {name}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Final scores */}
-      <div className="px-6 flex-1">
+      <div className="px-6 mb-4">
         <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">final scores</p>
         {sorted.map(([name, score], index) => (
           <div
@@ -48,12 +111,14 @@ export default function GameOver({ state, actions }) {
           >
             <div className="flex items-center gap-3">
               <span className="text-lg">{medals[index] || `${index + 1}.`}</span>
-              <span className={`text-sm font-medium ${name === state.myName ? 'text-white' : 'text-gray-400'}`}>
-                {name}
+              <div className="flex flex-col">
+                <span className={`text-sm font-medium ${name === state.myName ? 'text-white' : 'text-gray-400'}`}>
+                  {name}
+                </span>
                 {name === state.myName && (
-                  <span className="text-gray-600 font-normal ml-1">(you)</span>
+                  <span className="text-gray-600 text-xs">you</span>
                 )}
-              </span>
+              </div>
             </div>
             <ScrollingNumber value={score} className="text-white font-mono text-sm" />
           </div>
@@ -62,7 +127,7 @@ export default function GameOver({ state, actions }) {
       </div>
 
       {/* Actions */}
-      <div className="p-6 pt-4 flex flex-col gap-3">
+      <div className="p-6 pt-2 flex flex-col gap-3">
         {state.isHost ? (
           <>
             <button

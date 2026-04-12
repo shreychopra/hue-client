@@ -23,6 +23,7 @@ const initialState = {
   roundScores: {},
   averageColour: null,
   totalScores: {},
+  roundHistory: [],  // [{ word, submissions, average, scores }]
 
   // Error
   error: null
@@ -91,7 +92,7 @@ export function useGameState() {
     },
 
     game_started: () => {
-      mergeState({ totalScores: {} })
+      mergeState({ totalScores: {}, roundHistory: [] })
     },
 
     round_start: ({ round, word }) => {
@@ -124,13 +125,18 @@ export function useGameState() {
         Object.keys(scores).forEach(name => {
           totalScores[name] = (totalScores[name] || 0) + scores[name]
         })
+        const roundHistory = [
+          ...prev.roundHistory,
+          { word: prev.currentWord, submissions, scores, average }
+        ]
         return {
           ...prev,
           phase: 'REVEAL',
           submissions,
           roundScores: scores,
           averageColour: average,
-          totalScores
+          totalScores,
+          roundHistory
         }
       })
     },
@@ -159,6 +165,7 @@ export function useGameState() {
         roundScores: {},
         averageColour: null,
         totalScores: {},
+        roundHistory: [],
         error: null
       }))
     },

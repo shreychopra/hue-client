@@ -23,7 +23,7 @@ export default function Reveal({ state, actions }) {
       {/* Top bar */}
       <div className="flex items-center justify-between p-6">
         <span className="text-gray-600 text-xs font-mono">
-          {state.round} / {state.totalRounds} — {state.currentWord}
+          {state.round} / {state.totalRounds} — <span className="text-gray-400">{state.currentWord}</span>
         </span>
         <span className="text-gray-600 text-xs">hue</span>
       </div>
@@ -91,9 +91,14 @@ export default function Reveal({ state, actions }) {
             >
               <div className="flex items-center gap-3">
                 <span className="text-gray-700 text-xs font-mono w-4">{index + 1}</span>
-                <span className={`text-sm ${name === state.myName ? 'text-white font-medium' : 'text-gray-400'}`}>
-                  {name}
-                </span>
+                <div className="flex flex-col">
+                  <span className={`text-sm ${name === state.myName ? 'text-white font-medium' : 'text-gray-400'}`}>
+                    {name}
+                  </span>
+                  {name === state.myName && (
+                    <span className="text-gray-600 text-xs">you</span>
+                  )}
+                </div>
               </div>
               <ScrollingNumber value={score} className="text-white text-sm font-mono" />
             </div>

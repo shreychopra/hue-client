@@ -79,7 +79,7 @@ export default function Picking({ state, actions }) {
         style={{ color: submitted ? '#4b5563' : textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)' }}
       >
         <span className="text-xs font-mono">
-          {state.round} / {state.totalRounds} — {state.currentWord}
+          {state.round} / {state.totalRounds} — <span className="text-white">{state.currentWord}</span>
         </span>
         {!submitted && (
           <ScrollingNumber

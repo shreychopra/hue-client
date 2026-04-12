@@ -73,10 +73,6 @@ export default function ColourWheel({ hsb, onChange }) {
   return (
     <div className="flex flex-col items-center gap-4 w-full">
 
-      <div
-        className="w-20 h-20 rounded-2xl shadow-lg transition-colors duration-100"
-        style={{ backgroundColor: currentHex }}
-      />
 
       <div className="relative w-full max-w-[260px] aspect-square mx-auto">
         <canvas
