@@ -11,8 +11,8 @@ export default function App() {
     <>
       {/* Connection status — only shows when disconnected */}
       {!state.connected && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-red-950 border-b border-red-800 text-red-300 text-sm text-center py-2">
-          reconnecting...
+        <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 text-gray-400 text-sm text-center py-2">
+          connecting... (first load may take 30 seconds)
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
 
-const WHEEL_SIZE = 260
+const WHEEL_SIZE = Math.min(260, window.innerWidth - 80)
 const RADIUS = WHEEL_SIZE / 2
 
 export default function ColourWheel({ hsb, onChange }) {

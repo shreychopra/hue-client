@@ -75,7 +75,7 @@ export default function Picking({ state, actions }) {
 
   return (
     <div
-      className="flex flex-col items-center gap-6 transition-all duration-500 px-6"
+      className="flex flex-col items-center gap-6 transition-all duration-500 px-6 py-8 min-h-screen justify-center overflow-y-auto"
       style={{ opacity: visible ? 1 : 0 }}
     >
       <div className="text-center">
