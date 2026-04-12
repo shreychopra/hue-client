@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
+import ScrollingNumber from '../ui/ScrollingNumber'
 
 export default function GameOver({ state, actions }) {
   const [visible, setVisible] = useState(false)
@@ -12,89 +13,85 @@ export default function GameOver({ state, actions }) {
   const sorted = Object.entries(state.totalScores).sort((a, b) => b[1] - a[1])
   const winner = sorted[0]?.[0]
   const isWinner = winner === state.myName
-
   const medals = ['🥇', '🥈', '🥉']
 
   return (
     <div
-      className="flex flex-col items-center gap-8 w-full max-w-md px-6 py-10 transition-all duration-500"
+      className="hue-card transition-all duration-500"
       style={{ opacity: visible ? 1 : 0 }}
     >
+      {/* Top bar */}
+      <div className="flex items-center justify-between p-6 pb-4">
+        <span className="text-gray-600 text-xs">hue</span>
+        <span className="text-gray-600 text-xs italic">no right or wrong answers</span>
+      </div>
 
-      {/* Result header */}
-      <div className="text-center flex flex-col gap-2">
-        <h2 className="text-5xl font-bold text-white">
+      {/* Winner message */}
+      <div className="px-6 mb-4">
+        <h2 className="text-4xl font-bold text-white">
           {isWinner ? 'you won 🎉' : 'game over'}
         </h2>
-        <p className="text-gray-500 font-light">
+        <p className="text-gray-500 text-sm mt-1 font-light">
           {isWinner
             ? 'your instincts matched the group best'
             : `${winner} read the room best`}
         </p>
       </div>
 
-      {/* Final leaderboard */}
-      <div className="w-full bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+      {/* Final scores */}
+      <div className="px-6 flex-1">
+        <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">final scores</p>
         {sorted.map(([name, score], index) => (
           <div
             key={name}
-            className={`flex justify-between items-center px-5 py-4 border-b border-gray-800 last:border-0 ${name === state.myName ? 'bg-gray-800' : ''
-              }`}
+            className="flex justify-between items-center py-3 border-b border-gray-900 last:border-0"
           >
-            <div className="flex items-center gap-4">
-              <span className="text-xl">{medals[index] || `${index + 1}.`}</span>
-              <span className={`font-medium text-lg ${name === state.myName ? 'text-white' : 'text-gray-300'}`}>
+            <div className="flex items-center gap-3">
+              <span className="text-lg">{medals[index] || `${index + 1}.`}</span>
+              <span className={`text-sm font-medium ${name === state.myName ? 'text-white' : 'text-gray-400'}`}>
                 {name}
                 {name === state.myName && (
-                  <span className="text-gray-500 text-sm font-normal ml-2">(you)</span>
+                  <span className="text-gray-600 font-normal ml-1">(you)</span>
                 )}
               </span>
             </div>
-            <span className="text-white font-mono text-lg">{score}</span>
+            <ScrollingNumber value={score} className="text-white font-mono text-sm" />
           </div>
         ))}
+        <p className="text-gray-700 text-xs font-mono mt-3">max {state.totalRounds * 100} pts</p>
       </div>
 
-      {/* Max possible score note */}
-      <p className="text-gray-700 text-xs font-mono">
-        max score: {state.totalRounds * 100} pts
-      </p>
-
       {/* Actions */}
-      <div className="flex flex-col gap-3 w-full">
+      <div className="p-6 pt-4 flex flex-col gap-3">
         {state.isHost ? (
           <>
             <button
               onClick={actions.playAgain}
-              className="w-full py-4 rounded-2xl bg-white text-gray-950 font-semibold text-lg hover:bg-gray-100 active:scale-95 transition-all"
+              className="w-full py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95"
             >
               play again
             </button>
             <button
               onClick={actions.leaveRoom}
-              className="w-full py-4 rounded-2xl bg-gray-900 border border-gray-800 text-gray-400 font-semibold text-lg hover:bg-gray-800 active:scale-95 transition-all"
+              className="w-full py-3 rounded-full border border-gray-800 text-gray-500 text-sm hover:border-gray-600 hover:text-gray-300 transition-all active:scale-95"
             >
               exit to home
             </button>
           </>
         ) : (
-          <div className="flex flex-col gap-3">
-            <div className="w-full py-4 rounded-2xl bg-gray-900 border border-gray-800 text-gray-500 text-center font-semibold text-lg">
-              waiting for host to restart...
+          <>
+            <div className="w-full py-3 rounded-full border border-gray-800 text-gray-600 text-sm text-center">
+              waiting for host...
             </div>
             <button
               onClick={actions.leaveRoom}
-              className="w-full py-4 rounded-2xl bg-gray-900 border border-gray-800 text-gray-400 font-semibold text-lg hover:bg-gray-800 active:scale-95 transition-all"
+              className="w-full py-3 rounded-full border border-gray-800 text-gray-500 text-sm hover:border-gray-600 hover:text-gray-300 transition-all active:scale-95"
             >
               exit to home
             </button>
-          </div>
+          </>
         )}
       </div>
-
-      {/* Tagline footer */}
-      <p className="text-gray-700 text-sm font-light italic">no right or wrong answers</p>
-
     </div>
   )
 }

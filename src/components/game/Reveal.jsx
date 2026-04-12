@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
+import ScrollingNumber from '../ui/ScrollingNumber'
 
 export default function Reveal({ state, actions }) {
   const [visible, setVisible] = useState(false)
@@ -10,99 +11,108 @@ export default function Reveal({ state, actions }) {
   }, [])
 
   const isLastRound = state.round >= state.totalRounds
+  const avgHex = state.averageColour
+    ? hsbToHex(state.averageColour.h, state.averageColour.s, state.averageColour.b)
+    : '#888'
 
   return (
     <div
-      className="flex flex-col items-center gap-6 w-full max-w-md px-6 transition-all duration-500"
+      className="hue-card transition-all duration-500"
       style={{ opacity: visible ? 1 : 0 }}
     >
-
-      {/* Header */}
-      <div className="text-center">
-        <p className="text-gray-600 text-xs uppercase tracking-widest font-mono mb-2">
-          round {state.round} of {state.totalRounds}
-        </p>
-        <h2 className="text-4xl font-bold text-white">{state.currentWord}</h2>
+      {/* Top bar */}
+      <div className="flex items-center justify-between p-6">
+        <span className="text-gray-600 text-xs font-mono">
+          {state.round} / {state.totalRounds} — {state.currentWord}
+        </span>
+        <span className="text-gray-600 text-xs">hue</span>
       </div>
 
-      {/* Group average */}
-      {state.averageColour && (
-        <div className="flex flex-col items-center gap-2 w-full">
-          <p className="text-gray-600 text-xs uppercase tracking-widest">
-            your group felt
-          </p>
-          <div
-            className="w-full h-20 rounded-2xl shadow-lg transition-all duration-700"
-            style={{
-              backgroundColor: hsbToHex(
-                state.averageColour.h,
-                state.averageColour.s,
-                state.averageColour.b
-              )
-            }}
-          />
-        </div>
-      )}
-
-      {/* Player colours grid */}
-      <div className="grid grid-cols-2 gap-3 w-full">
+      {/* Player strips */}
+      <div className="flex gap-1.5 px-6">
         {Object.entries(state.submissions).map(([name, colour]) => {
-          const hex = hsbToHex(colour.h, colour.s, colour.b)
+          const playerHex = hsbToHex(colour.h, colour.s, colour.b)
           const score = state.roundScores[name] ?? 0
           const isMe = name === state.myName
 
           return (
             <div
               key={name}
-              className={`flex flex-col items-center gap-2 rounded-2xl p-4 border transition-all ${
-                isMe
-                  ? 'border-white bg-gray-900'
-                  : 'border-gray-800 bg-gray-900'
-              }`}
+              className="flex-1 rounded-2xl overflow-hidden"
+              style={{ minHeight: 160 }}
             >
+              {/* Top half — player colour */}
               <div
-                className="w-full h-14 rounded-xl shadow"
-                style={{ backgroundColor: hex }}
-              />
-              <p className="text-white text-sm font-medium">
-                {name} {isMe && <span className="text-gray-500">(you)</span>}
-              </p>
-              <p className="text-gray-400 text-sm font-mono">+{score} pts</p>
+                className="relative flex items-start justify-between p-3"
+                style={{ backgroundColor: playerHex, height: 100 }}
+              >
+                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  {score}
+                </span>
+                {isMe && (
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>you</span>
+                )}
+                {/* Diagonal clip — SVG overlay */}
+                <svg
+                  className="absolute bottom-0 left-0 w-full"
+                  viewBox="0 0 100 20"
+                  preserveAspectRatio="none"
+                  style={{ height: 24 }}
+                >
+                  <polygon points="0,20 100,0 100,20" fill={avgHex} />
+                </svg>
+              </div>
+              {/* Bottom half — group average */}
+              <div
+                className="flex items-end p-3"
+                style={{ backgroundColor: avgHex, height: 80 }}
+              >
+                <span
+                  className="text-xs font-medium truncate"
+                  style={{ color: 'rgba(255,255,255,0.7)' }}
+                >
+                  {name}
+                </span>
+              </div>
             </div>
           )
         })}
       </div>
 
       {/* Running scores */}
-      <div className="w-full bg-gray-900 border border-gray-800 rounded-2xl p-4">
-        <p className="text-gray-600 text-xs uppercase tracking-widest mb-3">scores</p>
+      <div className="flex-1 px-6 pt-5">
+        <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">scores</p>
         {Object.entries(state.totalScores)
           .sort((a, b) => b[1] - a[1])
           .map(([name, score], index) => (
-            <div key={name} className="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
+            <div
+              key={name}
+              className="flex justify-between items-center py-2 border-b border-gray-900 last:border-0"
+            >
               <div className="flex items-center gap-3">
-                <span className="text-gray-600 text-sm font-mono w-4">{index + 1}</span>
-                <span className={`font-medium ${name === state.myName ? 'text-white' : 'text-gray-300'}`}>
+                <span className="text-gray-700 text-xs font-mono w-4">{index + 1}</span>
+                <span className={`text-sm ${name === state.myName ? 'text-white font-medium' : 'text-gray-400'}`}>
                   {name}
                 </span>
               </div>
-              <span className="text-white font-mono">{score}</span>
+              <ScrollingNumber value={score} className="text-white text-sm font-mono" />
             </div>
           ))}
       </div>
 
-      {/* Next round / results */}
-      {state.isHost ? (
-        <button
-          onClick={actions.nextRound}
-          className="w-full py-4 rounded-2xl bg-white text-gray-950 font-semibold text-lg hover:bg-gray-100 active:scale-95 transition-all"
-        >
-          {isLastRound ? 'see final results' : 'next round →'}
-        </button>
-      ) : (
-        <p className="text-gray-500 text-sm">waiting for host to continue...</p>
-      )}
-
+      {/* Next button */}
+      <div className="p-6 pt-4">
+        {state.isHost ? (
+          <button
+            onClick={actions.nextRound}
+            className="w-full py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95"
+          >
+            {isLastRound ? 'see final results' : 'next round →'}
+          </button>
+        ) : (
+          <p className="text-gray-600 text-xs text-center">waiting for host...</p>
+        )}
+      </div>
     </div>
   )
 }
