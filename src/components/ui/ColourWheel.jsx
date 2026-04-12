@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
 
-const WHEEL_SIZE = Math.min(260, window.innerWidth - 80)
+const WHEEL_SIZE = 260
 const RADIUS = WHEEL_SIZE / 2
 
 export default function ColourWheel({ hsb, onChange }) {
@@ -71,19 +71,19 @@ export default function ColourWheel({ hsb, onChange }) {
   const dotY = RADIUS + dotDistance * Math.sin(dotAngle)
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-4 w-full">
 
       <div
         className="w-20 h-20 rounded-2xl shadow-lg transition-colors duration-100"
         style={{ backgroundColor: currentHex }}
       />
 
-      <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
+      <div className="relative w-full max-w-[260px] aspect-square mx-auto">
         <canvas
           ref={canvasRef}
           width={WHEEL_SIZE}
           height={WHEEL_SIZE}
-          className="rounded-full cursor-crosshair"
+          className="rounded-full cursor-crosshair w-full h-full"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
