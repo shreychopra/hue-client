@@ -1,7 +1,7 @@
 import { useGameState } from './hooks/useGameState'
-import Landing from './pages/Landing'
-import Lobby from './pages/Lobby'
-import Game from './pages/Game'
+import Landing from './pages/Landing.jsx'
+import Lobby from './pages/Lobby.jsx'
+import Game from './pages/Game.jsx'
 
 export default function App() {
   const { state, actions } = useGameState()
