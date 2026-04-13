@@ -32,7 +32,11 @@ export default function Reveal({ state, actions }) {
       {/* Player strips */}
       <div className="flex gap-1.5 px-6">
         {Object.entries(state.submissions)
-          .sort((a, b) => (state.roundScores[b[0]] ?? 0) - (state.roundScores[a[0]] ?? 0))
+          .sort((a, b) => {
+            const scoreDiff = (state.roundScores[b[0]] ?? 0) - (state.roundScores[a[0]] ?? 0)
+            if (scoreDiff !== 0) return scoreDiff
+            return a[0].localeCompare(b[0]) // alphabetical on tie
+          })
           .map(([name, colour]) => {
             const playerHex = hsbToHex(colour.h, colour.s, colour.b)
             const score = state.roundScores[name] ?? 0
@@ -106,7 +110,7 @@ export default function Reveal({ state, actions }) {
       </div>
 
       {/* Next button */}
-      <div className="p-6 pt-4" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}>
+      <div className="p-6 pt-4 safe-bottom" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}>
         {state.isHost ? (
           <button
             onClick={actions.nextRound}

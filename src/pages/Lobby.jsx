@@ -53,7 +53,7 @@ export default function Lobby({ state, actions }) {
 
       {/* Bottom actions */}
       <div
-        className="flex flex-col gap-3 pt-6"
+        className="flex flex-col gap-3 pt-6 safe-bottom"
         style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
       >
         {state.isHost ? (

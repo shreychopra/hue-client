@@ -7,17 +7,12 @@ export default function App() {
   const { state, actions } = useGameState()
   const { phase } = state
 
+  if (window.location.pathname === '/privacy') {
+    const Privacy = require('./pages/Privacy').default
+    return <Privacy />
+  }
   return (
-    <div
-      style={{
-        minHeight: '100dvh',
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#1c1c1c'
-      }}
-    >
+    <>
       {!state.connected && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 text-gray-400 text-sm text-center py-2">
           connecting... (first load may take 30 seconds)
@@ -29,6 +24,6 @@ export default function App() {
       {['ROUND_START', 'PICKING', 'REVEAL', 'GAME_OVER', 'PLAY_AGAIN_OFFER'].includes(phase) && (
         <Game state={state} actions={actions} />
       )}
-    </div>
+    </>
   )
 }

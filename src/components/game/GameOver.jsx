@@ -10,7 +10,17 @@ export default function GameOver({ state, actions }) {
     return () => clearTimeout(t)
   }, [])
 
-  const sorted = Object.entries(state.totalScores).sort((a, b) => b[1] - a[1])
+  const sorted = Object.entries(state.totalScores).sort((a, b) => {
+    const scoreDiff = b[1] - a[1]
+    if (scoreDiff !== 0) return scoreDiff
+
+    // Countback — compare best single round score
+    const bestRound = (name) => Math.max(
+      0,
+      ...state.roundHistory.map(r => r.scores[name] ?? 0)
+    )
+    return bestRound(b[0]) - bestRound(a[0])
+  })
   const winner = sorted[0]?.[0]
   const isWinner = winner === state.myName
   const medals = ['🥇', '🥈', '🥉']
@@ -140,7 +150,7 @@ export default function GameOver({ state, actions }) {
 
       {/* Fixed bottom actions — never scrolls */}
       <div
-        className="px-6 pt-5 shrink-0 border-t border-gray-900 flex flex-col gap-3"
+        className="px-6 pt-5 shrink-0 border-t border-gray-900 flex flex-col gap-3 safe-bottom"
         style={{ paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
       >
         {state.isHost ? (

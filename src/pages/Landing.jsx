@@ -124,9 +124,9 @@ export default function Landing({ state, actions }) {
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center py-4 border-t border-gray-900">
+      <div className="flex justify-between items-center py-4 border-t border-gray-900 safe-bottom">
         <span className="text-gray-700 text-xs">hue · v1.0</span>
-        <span className="text-gray-700 text-xs">playhue.vercel.app</span>
+        <a href="/privacy" className="text-gray-700 text-xs hover:text-gray-500 transition">privacy</a>
       </div>
 
     </div>

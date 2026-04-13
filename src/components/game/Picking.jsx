@@ -95,7 +95,7 @@ export default function Picking({ state, actions }) {
       {/* Wheel area */}
       {!submitted ? (
         <div
-          className="flex-1 flex flex-col items-center justify-center gap-4 px-6"
+          className="flex-1 flex flex-col items-center justify-center gap-4 px-6 pb-6 safe-bottom"
           style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
         >
           <ColourWheel hsb={hsb} onChange={handleColourChange} />
