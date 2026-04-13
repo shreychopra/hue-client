@@ -3,15 +3,60 @@
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1c1c1c;
 }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background-color: #1c1c1c;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
 }
 
 .font-mono {
   font-family: 'DM Mono', monospace;
+}
+
+/* Desktop card — properly proportioned floating card */
+.hue-card {
+  background-color: #0d0d0d;
+  width: 380px;
+  min-height: 600px;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile — true full screen, no gaps anywhere */
+@media (max-width: 480px) {
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .hue-card {
+    border-radius: 0;
+    width: 100vw;
+    height: 100dvh;
+    min-height: unset;
+    max-width: unset;
+  }
 }
 
 /* Brightness slider thumb */

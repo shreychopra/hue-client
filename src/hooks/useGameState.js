@@ -165,7 +165,6 @@ export function useGameState() {
         roundScores: {},
         averageColour: null,
         totalScores: {},
-        roundHistory: [],
         error: null
       }))
     },
