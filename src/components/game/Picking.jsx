@@ -15,7 +15,6 @@ export default function Picking({ state, actions }) {
   const [hsb, setHsb] = useState(randomHsb)
   const [submitted, setSubmitted] = useState(false)
   const [visible, setVisible] = useState(false)
-
   const hsbRef = useRef(hsb)
   const submittedRef = useRef(false)
 
@@ -61,49 +60,54 @@ export default function Picking({ state, actions }) {
 
   const hex = hsbToHex(hsb.h, hsb.s, hsb.b)
   const textDark = hsb.b > 55
-
   const timerWarning = state.timeLeft <= 5
+  const textColour = submitted ? '#6b7280' : textDark ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.7)'
 
   return (
     <div
-      className="hue-card transition-all duration-500"
+      className="hue-card"
       style={{
         opacity: visible ? 1 : 0,
+        transition: 'opacity 0.5s ease, background-color 0.15s ease',
         backgroundColor: submitted ? '#0d0d0d' : hex,
-        transition: 'background-color 0.15s ease, opacity 0.5s ease'
+        minHeight: 480
       }}
     >
       {/* Top bar */}
-      <div
-        className="flex items-center justify-between px-6 pt-6 pb-2"
-      >
-        <span className="text-xs font-mono" style={{ color: submitted ? '#4b5563' : textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 28px' }}>
+        <span style={{ color: textColour, fontSize: 12, fontFamily: 'monospace' }}>
           {state.round} / {state.totalRounds}
         </span>
-        <span className="text-sm font-medium" style={{ color: submitted ? '#6b7280' : textDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)' }}>
+        <span style={{ color: submitted ? '#6b7280' : textDark ? 'rgba(0,0,0,0.7)' : 'white', fontSize: 16, fontWeight: 600 }}>
           {state.currentWord}
         </span>
-        {!submitted && (
+        {!submitted ? (
           <ScrollingNumber
             value={state.timeLeft}
-            className={`text-sm font-mono ${timerWarning ? 'text-red-400' : ''}`}
-            style={{ color: textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}
+            className="font-mono"
+            style={{ color: timerWarning ? '#f87171' : textColour, fontSize: 12 }}
           />
+        ) : (
+          <span style={{ width: 24 }} />
         )}
       </div>
 
-      {/* Wheel area */}
+      {/* Content */}
       {!submitted ? (
-        <div
-          className="flex-1 flex flex-col items-center justify-center gap-4 px-6 pb-6 safe-bottom"
-          style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
-        >
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 28px' }}>
           <ColourWheel hsb={hsb} onChange={handleColourChange} />
           <button
             onClick={handleSubmit}
-            className="w-full py-3 rounded-full text-sm font-medium transition-all active:scale-95"
             style={{
-              backgroundColor: textDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.2)',
+              width: '100%',
+              padding: '14px',
+              borderRadius: 999,
+              border: 'none',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              backgroundColor: textDark ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.18)',
               color: textDark ? 'rgba(0,0,0,0.8)' : 'white',
               backdropFilter: 'blur(8px)'
             }}
@@ -112,12 +116,14 @@ export default function Picking({ state, actions }) {
           </button>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6 pb-6">
-          <div className="w-20 h-20 rounded-2xl shadow-lg" style={{ backgroundColor: hex }} />
-          <p className="text-gray-400 text-sm">locked in</p>
-          <p className="text-gray-700 text-xs">waiting for others...</p>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+          <div style={{ width: 80, height: 80, borderRadius: 20, backgroundColor: hex, boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }} />
+          <p style={{ color: '#9ca3af', fontSize: 14 }}>locked in</p>
+          <p style={{ color: '#4b5563', fontSize: 13 }}>waiting for others...</p>
         </div>
       )}
+
+      <div style={{ height: 24 }} className="safe-bottom" />
     </div>
   )
 }

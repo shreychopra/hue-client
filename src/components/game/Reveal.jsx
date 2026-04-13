@@ -15,113 +15,80 @@ export default function Reveal({ state, actions }) {
     ? hsbToHex(state.averageColour.h, state.averageColour.s, state.averageColour.b)
     : '#888'
 
+  const sortedSubmissions = Object.entries(state.submissions)
+    .sort((a, b) => {
+      const diff = (state.roundScores[b[0]] ?? 0) - (state.roundScores[a[0]] ?? 0)
+      if (diff !== 0) return diff
+      return a[0].localeCompare(b[0])
+    })
+
   return (
-    <div
-      className="hue-card transition-all duration-500"
-      style={{ opacity: visible ? 1 : 0 }}
-    >
+    <div className="hue-card" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+
       {/* Top bar */}
-      <div className="flex items-center justify-between px-6 pt-6 pb-2">
-        <span className="text-gray-600 text-xs font-mono">
-          {state.round} / {state.totalRounds}
-        </span>
-        <span className="text-gray-400 text-sm font-medium">{state.currentWord}</span>
-        <span className="text-gray-600 text-xs">hue</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 28px 16px' }}>
+        <span style={{ color: '#4b5563', fontSize: 12, fontFamily: 'monospace' }}>{state.round} / {state.totalRounds}</span>
+        <span style={{ color: '#d1d5db', fontSize: 15, fontWeight: 600 }}>{state.currentWord}</span>
+        <span style={{ color: '#374151', fontSize: 12 }}>hue</span>
       </div>
 
-      {/* Player strips */}
-      <div className="flex gap-1.5 px-6">
-        {Object.entries(state.submissions)
-          .sort((a, b) => {
-            const scoreDiff = (state.roundScores[b[0]] ?? 0) - (state.roundScores[a[0]] ?? 0)
-            if (scoreDiff !== 0) return scoreDiff
-            return a[0].localeCompare(b[0]) // alphabetical on tie
-          })
-          .map(([name, colour]) => {
-            const playerHex = hsbToHex(colour.h, colour.s, colour.b)
-            const score = state.roundScores[name] ?? 0
-            const isMe = name === state.myName
-
-            return (
-              <div
-                key={name}
-                className="flex-1 rounded-2xl overflow-hidden"
-                style={{ minHeight: 160 }}
-              >
-                {/* Top half — player colour */}
-                <div
-                  className="relative flex items-start justify-between p-3"
-                  style={{ backgroundColor: playerHex, height: 100 }}
-                >
-                  <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    {score}
-                  </span>
-                  {/* Diagonal clip — SVG overlay */}
-                  <svg
-                    className="absolute bottom-0 left-0 w-full"
-                    viewBox="0 0 100 20"
-                    preserveAspectRatio="none"
-                    style={{ height: 24 }}
-                  >
-                    <polygon points="0,20 100,0 100,20" fill={avgHex} />
-                  </svg>
-                </div>
-                {/* Bottom half — group average */}
-                <div
-                  className="flex items-end p-3"
-                  style={{ backgroundColor: avgHex, height: 80 }}
-                >
-                  <span
-                    className="text-xs font-medium truncate"
-                    style={{ color: 'rgba(255,255,255,0.7)' }}
-                  >
-                    {name}
-                  </span>
-                </div>
+      {/* Colour strips */}
+      <div style={{ display: 'flex', gap: 8, padding: '0 28px' }}>
+        {sortedSubmissions.map(([name, colour]) => {
+          const playerHex = hsbToHex(colour.h, colour.s, colour.b)
+          const score = state.roundScores[name] ?? 0
+          const isMe = name === state.myName
+          return (
+            <div key={name} style={{ flex: 1, borderRadius: 16, overflow: 'hidden' }}>
+              <div style={{ backgroundColor: playerHex, height: 90, position: 'relative', padding: '10px 10px 0' }}>
+                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontFamily: 'monospace', fontWeight: 600 }}>{score}</span>
+                <svg style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 20 }} viewBox="0 0 100 20" preserveAspectRatio="none">
+                  <polygon points="0,20 100,0 100,20" fill={avgHex} />
+                </svg>
               </div>
-            )
-          })}
+              <div style={{ backgroundColor: avgHex, height: 48, display: 'flex', alignItems: 'flex-end', padding: '0 10px 8px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: isMe ? 600 : 400 }}>
+                  {name}{isMe ? ' ·' : ''}
+                </span>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Running scores */}
-      <div className="flex-1 px-6 pt-5">
-        <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">scores</p>
+      {/* Scores */}
+      <div style={{ padding: '20px 28px 8px' }}>
+        <p style={{ color: '#374151', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>scores</p>
         {Object.entries(state.totalScores)
           .sort((a, b) => b[1] - a[1])
           .map(([name, score], index) => (
-            <div
-              key={name}
-              className="flex justify-between items-center py-2 border-b border-gray-900 last:border-0"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-gray-700 text-xs font-mono w-4">{index + 1}</span>
-                <div className="flex flex-col">
-                  <span className={`text-sm ${name === state.myName ? 'text-white font-medium' : 'text-gray-400'}`}>
-                    {name}
-                  </span>
-                  {name === state.myName && (
-                    <span className="text-gray-600 text-xs">you</span>
-                  )}
+            <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #141414' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ color: '#374151', fontSize: 12, fontFamily: 'monospace', width: 16 }}>{index + 1}</span>
+                <div>
+                  <p style={{ color: name === state.myName ? 'white' : '#9ca3af', fontSize: 14, fontWeight: name === state.myName ? 600 : 400 }}>{name}</p>
+                  {name === state.myName && <p style={{ color: '#4b5563', fontSize: 11 }}>you</p>}
                 </div>
               </div>
-              <ScrollingNumber value={score} className="text-white text-sm font-mono" />
+              <ScrollingNumber value={score} className="font-mono" style={{ color: 'white', fontSize: 14 }} />
             </div>
           ))}
       </div>
 
-      {/* Next button */}
-      <div className="p-6 pt-4 safe-bottom" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}>
+      {/* Button */}
+      <div style={{ padding: '16px 28px' }} className="safe-bottom">
         {state.isHost ? (
           <button
             onClick={actions.nextRound}
-            className="w-full py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95"
+            style={{ width: '100%', padding: '14px', borderRadius: 999, background: 'white', color: 'black', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {isLastRound ? 'see final results' : 'next round →'}
           </button>
         ) : (
-          <p className="text-gray-600 text-xs text-center">waiting for host...</p>
+          <p style={{ color: '#6b7280', fontSize: 13, textAlign: 'center' }}>waiting for host...</p>
         )}
       </div>
+
     </div>
   )
 }

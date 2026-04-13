@@ -16,45 +16,38 @@ export default function Landing({ state, actions }) {
   }
 
   return (
-    <div className="hue-card p-8 gap-0">
+    <div className="hue-card">
+      <div style={{ flex: 1, padding: '48px 36px 24px' }}>
 
-      {/* Top section */}
-      <div className="flex-1 flex flex-col justify-center gap-6 py-8">
-        <div>
-          <h1 className="text-7xl font-bold text-white tracking-tight leading-none">hue</h1>
-          <p className="text-gray-500 mt-3 text-base font-light leading-relaxed">
-            you're shown a word. pick the colour it makes you feel.
-            the closer you are to your group's instinct, the higher you score.
-          </p>
-          <p className="text-gray-600 mt-2 text-sm italic">no right or wrong answers.</p>
-        </div>
+        <h1 style={{ fontSize: 64, fontWeight: 700, color: 'white', lineHeight: 1, marginBottom: 24 }}>
+          hue
+        </h1>
 
-        {/* Error */}
+        <p style={{ color: '#6b7280', fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
+          you're shown a word. pick the colour it makes you feel.
+          the closer you are to your group's instinct, the higher you score.
+        </p>
+        <p style={{ color: '#4b5563', fontSize: 14, fontStyle: 'italic', marginBottom: 32 }}>
+          no right or wrong answers.
+        </p>
+
         {state.error && (
-          <p className="text-red-400 text-sm">{state.error}</p>
+          <p style={{ color: '#f87171', fontSize: 13, marginBottom: 16 }}>{state.error}</p>
         )}
 
-        {/* Mode: default */}
         {!mode && (
-          <div className="flex gap-3">
-            <button
-              onClick={() => setMode('create')}
-              className="flex-1 py-3 rounded-full border border-white text-white text-sm font-medium hover:bg-white hover:text-black transition-all active:scale-95"
-            >
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={() => setMode('create')} style={pillBtn('outline')}>
               create room
             </button>
-            <button
-              onClick={() => setMode('join')}
-              className="flex-1 py-3 rounded-full border border-gray-600 text-gray-400 text-sm font-medium hover:border-white hover:text-white transition-all active:scale-95"
-            >
+            <button onClick={() => setMode('join')} style={pillBtn('outline-dim')}>
               join room
             </button>
           </div>
         )}
 
-        {/* Create form */}
         {mode === 'create' && (
-          <div className="flex flex-col gap-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <input
               type="text"
               placeholder="your name"
@@ -63,19 +56,14 @@ export default function Landing({ state, actions }) {
               onKeyDown={e => e.key === 'Enter' && handleCreate()}
               maxLength={16}
               autoFocus
-              className="w-full py-3 px-4 rounded-full bg-transparent border border-gray-700 text-white placeholder-gray-600 outline-none focus:border-white transition text-sm"
+              style={inputStyle}
             />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setMode(null)}
-                className="py-3 px-5 rounded-full border border-gray-700 text-gray-500 text-sm hover:border-gray-500 transition-all active:scale-95"
-              >
-                ←
-              </button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setMode(null)} style={{ ...pillBtn('ghost'), width: 48 }}>←</button>
               <button
                 onClick={handleCreate}
                 disabled={!name.trim()}
-                className="flex-1 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-30"
+                style={{ ...pillBtn('filled'), flex: 1, opacity: name.trim() ? 1 : 0.3 }}
               >
                 create room
               </button>
@@ -83,9 +71,8 @@ export default function Landing({ state, actions }) {
           </div>
         )}
 
-        {/* Join form */}
         {mode === 'join' && (
-          <div className="flex flex-col gap-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <input
               type="text"
               placeholder="your name"
@@ -93,7 +80,7 @@ export default function Landing({ state, actions }) {
               onChange={e => setName(e.target.value)}
               maxLength={16}
               autoFocus
-              className="w-full py-3 px-4 rounded-full bg-transparent border border-gray-700 text-white placeholder-gray-600 outline-none focus:border-white transition text-sm"
+              style={inputStyle}
             />
             <input
               type="text"
@@ -102,19 +89,14 @@ export default function Landing({ state, actions }) {
               onChange={e => setCode(e.target.value.toUpperCase())}
               onKeyDown={e => e.key === 'Enter' && handleJoin()}
               maxLength={6}
-              className="w-full py-3 px-4 rounded-full bg-transparent border border-gray-700 text-white placeholder-gray-600 outline-none focus:border-white transition text-sm tracking-widest font-mono text-center"
+              style={{ ...inputStyle, textAlign: 'center', letterSpacing: 6, fontFamily: 'monospace' }}
             />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setMode(null)}
-                className="py-3 px-5 rounded-full border border-gray-700 text-gray-500 text-sm hover:border-gray-500 transition-all active:scale-95"
-              >
-                ←
-              </button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setMode(null)} style={{ ...pillBtn('ghost'), width: 48 }}>←</button>
               <button
                 onClick={handleJoin}
                 disabled={!name.trim() || code.length < 6}
-                className="flex-1 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-30"
+                style={{ ...pillBtn('filled'), flex: 1, opacity: (name.trim() && code.length === 6) ? 1 : 0.3 }}
               >
                 join room
               </button>
@@ -123,12 +105,45 @@ export default function Landing({ state, actions }) {
         )}
       </div>
 
-      {/* Footer */}
-      <div className="flex justify-between items-center py-4 border-t border-gray-900 safe-bottom">
-        <span className="text-gray-700 text-xs">hue · v1.0</span>
-        <a href="/privacy" className="text-gray-700 text-xs hover:text-gray-500 transition">privacy</a>
+      <div style={{
+        padding: '16px 36px',
+        borderTop: '1px solid #1a1a1a',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }} className="safe-bottom">
+        <span style={{ color: '#374151', fontSize: 12 }}>hue · v1.0</span>
+        <a href="/privacy" style={{ color: '#374151', fontSize: 12, textDecoration: 'none' }}>privacy</a>
       </div>
-
     </div>
   )
+}
+
+const inputStyle = {
+  width: '100%',
+  padding: '12px 16px',
+  borderRadius: 999,
+  border: '1px solid #2a2a2a',
+  background: 'transparent',
+  color: 'white',
+  fontSize: 14,
+  outline: 'none',
+}
+
+function pillBtn(variant) {
+  const base = {
+    padding: '12px 20px',
+    borderRadius: 999,
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: 'pointer',
+    border: 'none',
+    transition: 'opacity 0.15s',
+    fontFamily: 'inherit',
+  }
+  if (variant === 'filled') return { ...base, background: 'white', color: 'black' }
+  if (variant === 'outline') return { ...base, background: 'transparent', border: '1px solid white', color: 'white' }
+  if (variant === 'outline-dim') return { ...base, background: 'transparent', border: '1px solid #374151', color: '#9ca3af' }
+  if (variant === 'ghost') return { ...base, background: 'transparent', border: '1px solid #2a2a2a', color: '#6b7280' }
+  return base
 }

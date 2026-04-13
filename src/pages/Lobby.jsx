@@ -1,112 +1,89 @@
 import { useState } from 'react'
 
 export default function Lobby({ state, actions }) {
+  const [copied, setCopied] = useState(false)
   const canStart = state.players.length >= 2 && state.isHost
 
-  return (
-    <div className="hue-card p-8 gap-0">
-
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">hue</h1>
-        <button
-          onClick={actions.leaveRoom}
-          className="text-gray-600 text-sm hover:text-gray-400 transition"
-        >
-          leave ←
-        </button>
-      </div>
-
-      {/* Error */}
-      {state.error && (
-        <div className="bg-red-950 border border-red-900 text-red-400 text-sm px-4 py-3 rounded-2xl mb-4">
-          {state.error}
-        </div>
-      )}
-
-      {/* Room code */}
-      <RoomCodeDisplay code={state.roomCode} />
-
-      {/* Player list */}
-      <div className="flex-1 flex flex-col gap-2 mt-6">
-        <p className="text-gray-700 text-xs uppercase tracking-widest mb-1">
-          {state.players.length} / 8 players
-        </p>
-        {state.players.map((player, index) => (
-          <div
-            key={player.id}
-            className="flex items-center justify-between py-3 border-b border-gray-900"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: playerColour(index) }} />
-              <span className="text-white text-sm font-medium">{player.name}</span>
-            </div>
-            {player.id === state.hostId && (
-              <span className="text-gray-700 text-xs font-mono">host</span>
-            )}
-          </div>
-        ))}
-        {state.players.length < 2 && (
-          <p className="text-gray-700 text-xs mt-2">waiting for more players...</p>
-        )}
-      </div>
-
-      {/* Bottom actions */}
-      <div
-        className="flex flex-col gap-3 pt-6 safe-bottom"
-        style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
-      >
-        {state.isHost ? (
-          <>
-            <button
-              onClick={actions.startGame}
-              disabled={!canStart}
-              className="w-full py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-20"
-            >
-              start game
-            </button>
-            {!canStart && (
-              <p className="text-gray-700 text-xs text-center">need at least 2 players</p>
-            )}
-          </>
-        ) : (
-          <p className="text-gray-600 text-sm text-center">waiting for host to start...</p>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="pt-4 border-t border-gray-900 mt-4">
-        <p className="text-gray-700 text-xs text-center italic">no right or wrong answers</p>
-      </div>
-
-    </div>
-  )
-}
-
-function RoomCodeDisplay({ code }) {
-  const [copied, setCopied] = useState(false)
-
   const handleCopy = () => {
-    navigator.clipboard.writeText(code)
+    navigator.clipboard.writeText(state.roomCode)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   return (
-    <div
-      onClick={handleCopy}
-      className="flex items-center justify-between bg-gray-900 rounded-2xl px-5 py-4 cursor-pointer hover:bg-gray-800 transition"
-    >
-      <div>
-        <p className="text-gray-600 text-xs uppercase tracking-widest mb-1">room code</p>
-        <p className="text-white text-2xl font-mono font-bold tracking-widest">{code}</p>
+    <div className="hue-card">
+
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 28px 20px' }}>
+        <span style={{ color: 'white', fontWeight: 700, fontSize: 22 }}>hue</span>
+        <button onClick={actions.leaveRoom} style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+          leave ←
+        </button>
       </div>
-      <span className="text-gray-600 text-xs">{copied ? '✓ copied' : 'tap to copy'}</span>
+
+      {state.error && (
+        <div style={{ margin: '0 28px 16px', padding: '12px 16px', background: '#1a0a0a', border: '1px solid #3b1515', borderRadius: 12, color: '#f87171', fontSize: 13 }}>
+          {state.error}
+        </div>
+      )}
+
+      {/* Room code */}
+      <div
+        onClick={handleCopy}
+        style={{ margin: '0 28px 20px', padding: '16px 20px', background: '#141414', borderRadius: 16, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <div>
+          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 4 }}>room code</p>
+          <p style={{ color: 'white', fontSize: 28, fontFamily: 'monospace', fontWeight: 700, letterSpacing: 4 }}>{state.roomCode}</p>
+        </div>
+        <span style={{ color: '#4b5563', fontSize: 12 }}>{copied ? '✓ copied' : 'tap to copy'}</span>
+      </div>
+
+      {/* Players */}
+      <div style={{ padding: '0 28px', flex: 1 }}>
+        <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>
+          {state.players.length} / 8 players
+        </p>
+        {state.players.map((player, index) => (
+          <div key={player.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #141414' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: playerColour(index) }} />
+              <span style={{ color: 'white', fontSize: 14, fontWeight: 500 }}>{player.name}</span>
+            </div>
+            {player.id === state.hostId && <span style={{ color: '#374151', fontSize: 11, fontFamily: 'monospace' }}>host</span>}
+          </div>
+        ))}
+        {state.players.length < 2 && (
+          <p style={{ color: '#374151', fontSize: 13, marginTop: 12 }}>waiting for more players...</p>
+        )}
+      </div>
+
+      {/* Bottom */}
+      <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 10 }} className="safe-bottom">
+        {state.isHost ? (
+          <>
+            <button
+              onClick={actions.startGame}
+              disabled={!canStart}
+              style={{ width: '100%', padding: '14px', borderRadius: 999, background: 'white', color: 'black', fontSize: 14, fontWeight: 600, border: 'none', cursor: canStart ? 'pointer' : 'not-allowed', opacity: canStart ? 1 : 0.25, fontFamily: 'inherit' }}
+            >
+              start game
+            </button>
+            {!canStart && <p style={{ color: '#4b5563', fontSize: 12, textAlign: 'center' }}>need at least 2 players</p>}
+          </>
+        ) : (
+          <p style={{ color: '#6b7280', fontSize: 13, textAlign: 'center' }}>waiting for host to start...</p>
+        )}
+        <div style={{ textAlign: 'center', marginTop: 4 }}>
+          <p style={{ color: '#374151', fontSize: 12, fontStyle: 'italic' }}>no right or wrong answers</p>
+        </div>
+      </div>
+
     </div>
   )
 }
 
 function playerColour(index) {
-  const colours = ['#60a5fa', '#f472b6', '#34d399', '#fbbf24', '#a78bfa', '#fb923c', '#22d3ee', '#f87171']
+  const colours = ['#60a5fa','#f472b6','#34d399','#fbbf24','#a78bfa','#fb923c','#22d3ee','#f87171']
   return colours[index % colours.length]
 }

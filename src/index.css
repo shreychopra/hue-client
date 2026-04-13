@@ -8,22 +8,17 @@
   padding: 0;
 }
 
-html {
+html, body {
+  width: 100%;
   height: 100%;
-  height: -webkit-fill-available;
-}
-
-body {
-  font-family: 'DM Sans', sans-serif;
   background-color: #1c1c1c;
-  height: 100%;
-  height: -webkit-fill-available;
-  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
 }
 
 #root {
+  width: 100%;
   height: 100%;
-  height: -webkit-fill-available;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,34 +29,31 @@ body {
   font-family: 'DM Mono', monospace;
 }
 
-/* Desktop card */
+/* THE card — all pages use this */
 .hue-card {
   background-color: #0d0d0d;
-  width: 520px;
-  min-height: 420px;
+  width: 480px;
   border-radius: 28px;
-  position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  /* No fixed height — card grows with content */
 }
 
-/* Mobile — true full screen */
-@media (max-width: 600px) {
-  html, body, #root {
-    height: 100%;
-    height: -webkit-fill-available;
-    overflow: hidden;
+/* Mobile */
+@media (max-width: 520px) {
+  #root {
+    align-items: stretch;
+    justify-content: stretch;
     background-color: #0d0d0d;
   }
 
   .hue-card {
     border-radius: 0;
     width: 100%;
-    height: 100%;
-    height: -webkit-fill-available;
-    min-height: unset;
-    max-width: unset;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
   }
 }
 
@@ -80,6 +72,11 @@ body {
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Safe area for mobile browser chrome */
+.safe-bottom {
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+
 /* Brightness slider */
 .brightness-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -88,8 +85,8 @@ body {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
   cursor: pointer;
   transition: transform 0.1s;
 }
@@ -103,11 +100,7 @@ body {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
   cursor: pointer;
-}
-/* iOS Safari safe area spacer */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
 }
