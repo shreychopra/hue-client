@@ -113,7 +113,10 @@ export default function Landing({ state, actions }) {
         alignItems: 'center'
       }} className="safe-bottom">
         <span style={{ color: '#374151', fontSize: 12 }}>hue · v1.0</span>
-        <a href="/privacy" style={{ color: '#374151', fontSize: 12, textDecoration: 'none' }}>privacy</a>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <a href="/scoring" style={{ color: '#374151', fontSize: 12, textDecoration: 'none' }}>scoring</a>
+          <a href="/privacy" style={{ color: '#374151', fontSize: 12, textDecoration: 'none' }}>privacy</a>
+        </div>
       </div>
     </div>
   )

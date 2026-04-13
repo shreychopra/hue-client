@@ -3,14 +3,14 @@ import Landing from './pages/Landing'
 import Lobby from './pages/Lobby'
 import Game from './pages/Game'
 import Privacy from './pages/Privacy'
+import Scoring from './pages/Scoring'
 
 export default function App() {
   const { state, actions } = useGameState()
   const { phase } = state
 
-  if (window.location.pathname === '/privacy') {
-    return <Privacy />
-  }
+  if (window.location.pathname === '/privacy') return <Privacy />
+  if (window.location.pathname === '/scoring') return <Scoring />
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function App() {
       )}
       {phase === 'LANDING' && <Landing state={state} actions={actions} />}
       {phase === 'LOBBY' && <Lobby state={state} actions={actions} />}
-      {['ROUND_START','PICKING','REVEAL','GAME_OVER','PLAY_AGAIN_OFFER'].includes(phase) && (
+      {['ROUND_START', 'PICKING', 'REVEAL', 'GAME_OVER', 'PLAY_AGAIN_OFFER'].includes(phase) && (
         <Game state={state} actions={actions} />
       )}
     </>
