@@ -139,7 +139,10 @@ export default function GameOver({ state, actions }) {
       </div>
 
       {/* Fixed bottom actions — never scrolls */}
-      <div className="px-6 py-5 shrink-0 border-t border-gray-900 flex flex-col gap-3">
+      <div
+        className="px-6 pt-5 shrink-0 border-t border-gray-900 flex flex-col gap-3"
+        style={{ paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
+      >
         {state.isHost ? (
           <>
             <button

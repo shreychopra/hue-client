@@ -106,7 +106,7 @@ export default function Reveal({ state, actions }) {
       </div>
 
       {/* Next button */}
-      <div className="p-6 pt-4">
+      <div className="p-6 pt-4" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}>
         {state.isHost ? (
           <button
             onClick={actions.nextRound}
