@@ -1,49 +1,38 @@
 export default function Privacy() {
   return (
-    <div className="hue-card p-8 overflow-y-auto">
-      <div className="flex items-center justify-between mb-8">
-        <a href="/" className="text-2xl font-bold text-white">hue</a>
-      </div>
+    <div className="hue-card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+      <div style={{ padding: '32px 28px 24px' }}>
+        <a href="/" style={{ color: 'white', fontWeight: 700, fontSize: 20, textDecoration: 'none', display: 'block', marginBottom: 20 }}>hue</a>
 
-      <div className="flex flex-col gap-6 text-sm text-gray-400 leading-relaxed">
-        <div>
-          <h1 className="text-white text-xl font-semibold mb-1">Privacy Policy</h1>
-          <p className="text-gray-600 text-xs">Last updated: April 2026</p>
+        <h1 style={{ color: 'white', fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Privacy Policy</h1>
+        <p style={{ color: '#4b5563', fontSize: 12, marginBottom: 32 }}>Last updated: April 2026</p>
+
+        {[
+          ['What we collect', 'Nothing. Hue has no accounts, no sign-up, and no personal data collection of any kind. We don\'t collect your name, email, device type, or location.'],
+          ['Game data', 'All game state (rooms, players, scores) exists only in server memory and is permanently deleted when a game session ends. Nothing is written to a database.'],
+          ['Cookies and storage', 'We do not use cookies or local storage. There is nothing to remember between sessions.'],
+          ['Children', 'Hue is a general-audience game suitable for all ages. We do not knowingly collect any information from anyone, including children.'],
+          ['Changes', 'If this policy changes, the updated date above will reflect that.'],
+        ].map(([title, body]) => (
+          <div key={title} style={{ marginBottom: 24 }}>
+            <h2 style={{ color: 'white', fontSize: 14, fontWeight: 600, marginBottom: 6 }}>{title}</h2>
+            <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.6 }}>{body}</p>
+          </div>
+        ))}
+
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ color: 'white', fontSize: 14, fontWeight: 600, marginBottom: 6 }}>Third-party services</h2>
+          <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.6 }}>
+            Hue is hosted on Vercel (frontend) and Render (backend). These services may collect standard server logs as part of their infrastructure. See{' '}
+            <a href="https://vercel.com/legal/privacy-policy" style={{ color: '#d1d5db' }} target="_blank" rel="noreferrer">Vercel's privacy policy</a>{' '}
+            and{' '}
+            <a href="https://render.com/privacy" style={{ color: '#d1d5db' }} target="_blank" rel="noreferrer">Render's privacy policy</a>.
+          </p>
         </div>
 
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">What we collect</h2>
-          <p>Nothing. Hue has no accounts, no sign-up, and no personal data collection of any kind. We don't collect your name, email, device type, or location.</p>
+        <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 20, marginTop: 8 }}>
+          <p style={{ color: '#374151', fontSize: 12 }}>hue · playhue.vercel.app</p>
         </div>
-
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">Game data</h2>
-          <p>All game state (rooms, players, scores) exists only in server memory and is permanently deleted when a game session ends. Nothing is written to a database.</p>
-        </div>
-
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">Cookies and storage</h2>
-          <p>We do not use cookies or local storage. There is nothing to remember between sessions.</p>
-        </div>
-
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">Third-party services</h2>
-          <p>Hue is hosted on Vercel (frontend) and Render (backend). These services may collect standard server logs (IP addresses, request timestamps) as part of their infrastructure. See <a href="https://vercel.com/legal/privacy-policy" className="text-gray-300 underline" target="_blank">Vercel's privacy policy</a> and <a href="https://render.com/privacy" className="text-gray-300 underline" target="_blank">Render's privacy policy</a>.</p>
-        </div>
-
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">Children</h2>
-          <p>Hue is a general-audience game suitable for all ages. We do not knowingly collect any information from anyone, including children.</p>
-        </div>
-
-        <div>
-          <h2 className="text-white text-sm font-medium mb-2">Changes</h2>
-          <p>If this policy changes, the updated date above will reflect that.</p>
-        </div>
-      </div>
-
-      <div className="mt-8 pt-4 border-t border-gray-900">
-        <p className="text-gray-700 text-xs">hue · playhue.vercel.app</p>
       </div>
     </div>
   )

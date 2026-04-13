@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
-import ScrollingNumber from '../ui/ScrollingNumber'
 
 export default function GameOver({ state, actions }) {
   const [visible, setVisible] = useState(false)
@@ -11,102 +10,68 @@ export default function GameOver({ state, actions }) {
   }, [])
 
   const sorted = Object.entries(state.totalScores).sort((a, b) => {
-    const scoreDiff = b[1] - a[1]
-    if (scoreDiff !== 0) return scoreDiff
-
-    // Countback — compare best single round score
-    const bestRound = (name) => Math.max(
-      0,
-      ...state.roundHistory.map(r => r.scores[name] ?? 0)
-    )
-    return bestRound(b[0]) - bestRound(a[0])
+    const diff = b[1] - a[1]
+    if (diff !== 0) return diff
+    const best = (n) => Math.max(0, ...state.roundHistory.map(r => r.scores[n] ?? 0))
+    return best(b[0]) - best(a[0])
   })
+
   const winner = sorted[0]?.[0]
   const isWinner = winner === state.myName
   const medals = ['🥇', '🥈', '🥉']
 
   return (
-    <div
-      className="hue-card transition-all duration-500"
-      style={{ opacity: visible ? 1 : 0 }}
-    >
-      {/* Fixed top bar — never scrolls */}
-      <div className="flex items-center justify-between px-6 pt-6 pb-2 shrink-0">
-        <span className="text-gray-600 text-xs">hue</span>
-        <span className="text-gray-600 text-xs italic">no right or wrong answers</span>
+    <div className="hue-card" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+
+      {/* Fixed top */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 24px 16px', flexShrink: 0 }}>
+        <span style={{ color: '#374151', fontSize: 12 }}>hue</span>
+        <span style={{ color: '#374151', fontSize: 12, fontStyle: 'italic' }}>no right or wrong answers</span>
       </div>
 
-      {/* Scrollable content area */}
-      <div className="flex-1 overflow-y-auto px-6 pb-4">
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px' }}>
 
-        {/* Winner message */}
-        <div className="mb-6 pt-2">
-          <h2 className="text-4xl font-bold text-white">
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ color: 'white', fontSize: 40, fontWeight: 700, margin: 0 }}>
             {isWinner ? 'you won.' : 'game over'}
           </h2>
-          <p className="text-gray-500 text-sm mt-1 font-light">
-            {isWinner
-              ? 'your instincts matched the group best'
-              : `${winner} read the room best`}
+          <p style={{ color: '#6b7280', fontSize: 14, marginTop: 6, fontWeight: 300 }}>
+            {isWinner ? 'your instincts matched the group best' : `${winner} read the room best`}
           </p>
         </div>
 
-        {/* Round history */}
+        {/* All rounds */}
         {state.roundHistory.length > 0 && (
-          <div className="mb-6">
-            <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">all rounds</p>
-            <div className="flex flex-col gap-5">
+          <div style={{ marginBottom: 24 }}>
+            <p style={{ color: '#374151', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 16 }}>all rounds</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {state.roundHistory.map((round, i) => {
                 const avgHex = hsbToHex(round.average.h, round.average.s, round.average.b)
-                const sortedSubmissions = Object.entries(round.submissions)
+                const sortedSubs = Object.entries(round.submissions)
                   .sort((a, b) => (round.scores[b[0]] ?? 0) - (round.scores[a[0]] ?? 0))
-
                 return (
                   <div key={i}>
-                    <p className="text-gray-500 text-xs mb-2 font-mono">
+                    <p style={{ color: '#6b7280', fontSize: 12, marginBottom: 8, fontFamily: 'monospace' }}>
                       {i + 1}. {round.word}
                     </p>
-                    <div className="flex gap-1.5">
-                      {sortedSubmissions.map(([name, colour]) => {
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {sortedSubs.map(([name, colour]) => {
                         const playerHex = hsbToHex(colour.h, colour.s, colour.b)
                         const score = round.scores[name] ?? 0
                         const isMe = name === state.myName
-
                         return (
-                          <div
-                            key={name}
-                            className="flex-1 rounded-xl overflow-hidden"
-                          >
-                            {/* Player colour */}
-                            <div
-                              className="relative flex items-start justify-between p-2"
-                              style={{ backgroundColor: playerHex, height: 56 }}
-                            >
-                              <span
-                                className="text-xs font-mono font-medium"
-                                style={{ color: 'rgba(255,255,255,0.9)' }}
-                              >
+                          <div key={name} style={{ flex: 1, borderRadius: 12, overflow: 'hidden' }}>
+                            <div style={{ backgroundColor: playerHex, height: 60, position: 'relative', padding: '8px 8px 0' }}>
+                              <span style={{ color: 'rgba(255,255,255,0.95)', fontSize: 11, fontFamily: 'monospace', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
                                 {score}
                               </span>
-                              {/* Diagonal cut to average */}
-                              <svg
-                                className="absolute bottom-0 left-0 w-full"
-                                viewBox="0 0 100 20"
-                                preserveAspectRatio="none"
-                                style={{ height: 16 }}
-                              >
+                              <svg style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 18 }} viewBox="0 0 100 20" preserveAspectRatio="none">
                                 <polygon points="0,20 100,0 100,20" fill={avgHex} />
                               </svg>
                             </div>
-                            {/* Group average */}
-                            <div
-                              className="flex items-end p-2"
-                              style={{ backgroundColor: avgHex, height: 36 }}
-                            >
-                              <span
-                                className="text-xs truncate font-medium"
-                                style={{ color: 'rgba(255,255,255,0.8)' }}
-                              >
+                            <div style={{ backgroundColor: avgHex, height: 34, display: 'flex', alignItems: 'flex-end', padding: '0 8px 6px' }}>
+                              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 11, fontWeight: isMe ? 700 : 400, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                                 {name}{isMe ? ' ·' : ''}
                               </span>
                             </div>
@@ -122,66 +87,46 @@ export default function GameOver({ state, actions }) {
         )}
 
         {/* Final scores */}
-        <div className="mb-4">
-          <p className="text-gray-700 text-xs uppercase tracking-widest mb-3">final scores</p>
+        <div style={{ marginBottom: 8 }}>
+          <p style={{ color: '#374151', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10 }}>final scores</p>
           {sorted.map(([name, score], index) => (
-            <div
-              key={name}
-              className="flex justify-between items-center py-3 border-b border-gray-900 last:border-0"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-base">{medals[index] || `${index + 1}.`}</span>
-                <div className="flex flex-col">
-                  <span className={`text-sm font-medium ${name === state.myName ? 'text-white' : 'text-gray-400'}`}>
-                    {name}
-                  </span>
-                  {name === state.myName && (
-                    <span className="text-gray-600 text-xs">you</span>
-                  )}
+            <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #161616' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 16 }}>{medals[index] || `${index + 1}.`}</span>
+                <div>
+                  <p style={{ color: name === state.myName ? 'white' : '#9ca3af', fontSize: 14, fontWeight: name === state.myName ? 600 : 400, margin: 0 }}>{name}</p>
+                  {name === state.myName && <p style={{ color: '#4b5563', fontSize: 11, margin: 0 }}>you</p>}
                 </div>
               </div>
-              <ScrollingNumber value={score} className="text-white font-mono text-sm" />
+              <span style={{ color: 'white', fontSize: 14, fontFamily: 'monospace', fontWeight: 600 }}>{score}</span>
             </div>
           ))}
-          <p className="text-gray-700 text-xs font-mono mt-3">max {state.totalRounds * 100} pts</p>
+          <p style={{ color: '#374151', fontSize: 11, fontFamily: 'monospace', marginTop: 10 }}>max {state.totalRounds * 100} pts</p>
         </div>
 
       </div>
 
-      {/* Fixed bottom actions — never scrolls */}
-      <div
-        className="px-6 pt-5 shrink-0 border-t border-gray-900 flex flex-col gap-3 safe-bottom"
-        style={{ paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
-      >
+      {/* Fixed bottom buttons */}
+      <div style={{ padding: '16px 24px', borderTop: '1px solid #161616', display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }} className="safe-bottom">
         {state.isHost ? (
           <>
-            <button
-              onClick={actions.playAgain}
-              className="w-full py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition-all active:scale-95"
-            >
-              play again
-            </button>
-            <button
-              onClick={actions.leaveRoom}
-              className="w-full py-3 rounded-full border border-gray-800 text-gray-500 text-sm hover:border-gray-600 hover:text-gray-300 transition-all active:scale-95"
-            >
-              exit to home
-            </button>
+            <button onClick={actions.playAgain} style={btnStyle('filled')}>play again</button>
+            <button onClick={actions.leaveRoom} style={btnStyle('outline')}>exit to home</button>
           </>
         ) : (
           <>
-            <div className="w-full py-3 rounded-full border border-gray-800 text-gray-600 text-sm text-center">
-              waiting for host...
-            </div>
-            <button
-              onClick={actions.leaveRoom}
-              className="w-full py-3 rounded-full border border-gray-800 text-gray-500 text-sm hover:border-gray-600 hover:text-gray-300 transition-all active:scale-95"
-            >
-              exit to home
-            </button>
+            <div style={{ ...btnStyle('outline'), textAlign: 'center', color: '#4b5563', cursor: 'default' }}>waiting for host...</div>
+            <button onClick={actions.leaveRoom} style={btnStyle('outline')}>exit to home</button>
           </>
         )}
       </div>
     </div>
   )
+}
+
+function btnStyle(variant) {
+  const base = { width: '100%', padding: '13px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: 'none' }
+  if (variant === 'filled') return { ...base, background: 'white', color: 'black' }
+  if (variant === 'outline') return { ...base, background: 'transparent', border: '1px solid #222', color: '#6b7280' }
+  return base
 }
