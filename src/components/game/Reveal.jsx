@@ -21,62 +21,62 @@ export default function Reveal({ state, actions }) {
       style={{ opacity: visible ? 1 : 0 }}
     >
       {/* Top bar */}
-      <div className="flex items-center justify-between p-6">
+      <div className="flex items-center justify-between px-6 pt-6 pb-2">
         <span className="text-gray-600 text-xs font-mono">
-          {state.round} / {state.totalRounds} — <span className="text-gray-400">{state.currentWord}</span>
+          {state.round} / {state.totalRounds}
         </span>
+        <span className="text-gray-400 text-sm font-medium">{state.currentWord}</span>
         <span className="text-gray-600 text-xs">hue</span>
       </div>
 
       {/* Player strips */}
       <div className="flex gap-1.5 px-6">
-        {Object.entries(state.submissions).map(([name, colour]) => {
-          const playerHex = hsbToHex(colour.h, colour.s, colour.b)
-          const score = state.roundScores[name] ?? 0
-          const isMe = name === state.myName
+        {Object.entries(state.submissions)
+          .sort((a, b) => (state.roundScores[b[0]] ?? 0) - (state.roundScores[a[0]] ?? 0))
+          .map(([name, colour]) => {
+            const playerHex = hsbToHex(colour.h, colour.s, colour.b)
+            const score = state.roundScores[name] ?? 0
+            const isMe = name === state.myName
 
-          return (
-            <div
-              key={name}
-              className="flex-1 rounded-2xl overflow-hidden"
-              style={{ minHeight: 160 }}
-            >
-              {/* Top half — player colour */}
+            return (
               <div
-                className="relative flex items-start justify-between p-3"
-                style={{ backgroundColor: playerHex, height: 100 }}
+                key={name}
+                className="flex-1 rounded-2xl overflow-hidden"
+                style={{ minHeight: 160 }}
               >
-                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                  {score}
-                </span>
-                {isMe && (
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>you</span>
-                )}
-                {/* Diagonal clip — SVG overlay */}
-                <svg
-                  className="absolute bottom-0 left-0 w-full"
-                  viewBox="0 0 100 20"
-                  preserveAspectRatio="none"
-                  style={{ height: 24 }}
+                {/* Top half — player colour */}
+                <div
+                  className="relative flex items-start justify-between p-3"
+                  style={{ backgroundColor: playerHex, height: 100 }}
                 >
-                  <polygon points="0,20 100,0 100,20" fill={avgHex} />
-                </svg>
-              </div>
-              {/* Bottom half — group average */}
-              <div
-                className="flex items-end p-3"
-                style={{ backgroundColor: avgHex, height: 80 }}
-              >
-                <span
-                  className="text-xs font-medium truncate"
-                  style={{ color: 'rgba(255,255,255,0.7)' }}
+                  <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                    {score}
+                  </span>
+                  {/* Diagonal clip — SVG overlay */}
+                  <svg
+                    className="absolute bottom-0 left-0 w-full"
+                    viewBox="0 0 100 20"
+                    preserveAspectRatio="none"
+                    style={{ height: 24 }}
+                  >
+                    <polygon points="0,20 100,0 100,20" fill={avgHex} />
+                  </svg>
+                </div>
+                {/* Bottom half — group average */}
+                <div
+                  className="flex items-end p-3"
+                  style={{ backgroundColor: avgHex, height: 80 }}
                 >
-                  {name}
-                </span>
+                  <span
+                    className="text-xs font-medium truncate"
+                    style={{ color: 'rgba(255,255,255,0.7)' }}
+                  >
+                    {name}
+                  </span>
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
       </div>
 
       {/* Running scores */}

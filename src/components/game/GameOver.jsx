@@ -29,7 +29,7 @@ export default function GameOver({ state, actions }) {
       {/* Winner message */}
       <div className="px-6 mb-6">
         <h2 className="text-4xl font-bold text-white">
-          {isWinner ? 'you won 🎉' : 'game over'}
+          {isWinner ? 'you won!' : 'game over'}
         </h2>
         <p className="text-gray-500 text-sm mt-1 font-light">
           {isWinner
@@ -51,48 +51,50 @@ export default function GameOver({ state, actions }) {
                     {i + 1}. {round.word}
                   </p>
                   <div className="flex gap-1.5">
-                    {Object.entries(round.submissions).map(([name, colour]) => {
-                      const playerHex = hsbToHex(colour.h, colour.s, colour.b)
-                      const score = round.scores[name] ?? 0
-                      return (
-                        <div
-                          key={name}
-                          className="flex-1 rounded-xl overflow-hidden"
-                          style={{ minHeight: 80 }}
-                        >
-                          {/* Player colour — top */}
+                    {Object.entries(round.submissions)
+                      .sort((a, b) => (round.scores[b[0]] ?? 0) - (round.scores[a[0]] ?? 0))
+                      .map(([name, colour]) => {
+                        const playerHex = hsbToHex(colour.h, colour.s, colour.b)
+                        const score = round.scores[name] ?? 0
+                        return (
                           <div
-                            className="relative flex items-start justify-between p-2"
-                            style={{ backgroundColor: playerHex, height: 52 }}
+                            key={name}
+                            className="flex-1 rounded-xl overflow-hidden"
+                            style={{ minHeight: 80 }}
                           >
-                            <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                              {score}
-                            </span>
-                            {/* Diagonal cut */}
-                            <svg
-                              className="absolute bottom-0 left-0 w-full"
-                              viewBox="0 0 100 20"
-                              preserveAspectRatio="none"
-                              style={{ height: 16 }}
+                            {/* Player colour — top */}
+                            <div
+                              className="relative flex items-start justify-between p-2"
+                              style={{ backgroundColor: playerHex, height: 52 }}
                             >
-                              <polygon points="0,20 100,0 100,20" fill={avgHex} />
-                            </svg>
-                          </div>
-                          {/* Group average — bottom */}
-                          <div
-                            className="flex items-end p-2"
-                            style={{ backgroundColor: avgHex, height: 36 }}
-                          >
-                            <span
-                              className="text-xs truncate"
-                              style={{ color: 'rgba(255,255,255,0.7)' }}
+                              <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                                {score}
+                              </span>
+                              {/* Diagonal cut */}
+                              <svg
+                                className="absolute bottom-0 left-0 w-full"
+                                viewBox="0 0 100 20"
+                                preserveAspectRatio="none"
+                                style={{ height: 16 }}
+                              >
+                                <polygon points="0,20 100,0 100,20" fill={avgHex} />
+                              </svg>
+                            </div>
+                            {/* Group average — bottom */}
+                            <div
+                              className="flex items-end p-2"
+                              style={{ backgroundColor: avgHex, height: 36 }}
                             >
-                              {name}
-                            </span>
+                              <span
+                                className="text-xs truncate"
+                                style={{ color: 'rgba(255,255,255,0.7)' }}
+                              >
+                                {name}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      })}
                   </div>
                 </div>
               )

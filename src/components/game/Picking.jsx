@@ -75,16 +75,19 @@ export default function Picking({ state, actions }) {
     >
       {/* Top bar */}
       <div
-        className="flex items-center justify-between p-6"
-        style={{ color: submitted ? '#4b5563' : textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)' }}
+        className="flex items-center justify-between px-6 pt-6 pb-2"
       >
-        <span className="text-xs font-mono">
-          {state.round} / {state.totalRounds} — <span className="text-white">{state.currentWord}</span>
+        <span className="text-xs font-mono" style={{ color: submitted ? '#4b5563' : textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}>
+          {state.round} / {state.totalRounds}
+        </span>
+        <span className="text-sm font-medium" style={{ color: submitted ? '#6b7280' : textDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)' }}>
+          {state.currentWord}
         </span>
         {!submitted && (
           <ScrollingNumber
             value={state.timeLeft}
             className={`text-sm font-mono ${timerWarning ? 'text-red-400' : ''}`}
+            style={{ color: textDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }}
           />
         )}
       </div>
