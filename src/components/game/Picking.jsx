@@ -70,6 +70,7 @@ export default function Picking({ state, actions }) {
         opacity: visible ? 1 : 0,
         transition: 'opacity 0.4s ease, background-color 0.15s ease',
         backgroundColor: submitted ? '#0d0d0d' : hex,
+        minHeight: 520,
       }}
     >
       {/* Top bar */}
@@ -85,8 +86,8 @@ export default function Picking({ state, actions }) {
         </span>
         {!submitted
           ? <span style={{ color: timerWarning ? '#f87171' : submitted ? '#4b5563' : textOnColour, fontSize: 12, fontFamily: 'monospace' }}>
-              {state.timeLeft}
-            </span>
+            {state.timeLeft}
+          </span>
           : <span style={{ width: 24 }} />
         }
       </div>

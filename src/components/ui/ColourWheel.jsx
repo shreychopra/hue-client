@@ -132,24 +132,22 @@ export default function ColourWheel({ hsb, onChange }) {
         <label className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>
           brightness
         </label>
-        <div className="relative w-full max-w-[260px] h-5 flex items-center">
-          <div
-            className="absolute w-full h-2 rounded-full"
-            style={{
-              background: `linear-gradient(to right, #000000, ${hsbToHex(hsb.h, hsb.s, 100)})`
-            }}
-          />
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={hsb.b}
-            onChange={handleBrightness}
-            className="absolute w-full appearance-none bg-transparent cursor-pointer brightness-slider"
-          />
-        </div>
+        <div
+          className="absolute w-full rounded-full"
+          style={{
+            height: 6,
+            background: `linear-gradient(to right, #000000, ${hsbToHex(hsb.h, hsb.s, 100)})`
+          }}
+        />
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={hsb.b}
+          onChange={handleBrightness}
+          className="absolute w-full appearance-none bg-transparent cursor-pointer brightness-slider"
+        />
       </div>
-
     </div>
   )
 }
