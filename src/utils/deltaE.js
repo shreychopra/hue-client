@@ -13,15 +13,18 @@ function deltaE(lab1, lab2) {
 
 // Takes an array of HSB colour objects: [{ h, s, b }, { h, s, b }, ...]
 // Returns the group average HSB colour
+function circularMeanHue(hues) {
+  const sinSum = hues.reduce((sum, h) => sum + Math.sin(h * Math.PI / 180), 0)
+  const cosSum = hues.reduce((sum, h) => sum + Math.cos(h * Math.PI / 180), 0)
+  const mean = Math.atan2(sinSum / hues.length, cosSum / hues.length) * 180 / Math.PI
+  return (mean + 360) % 360
+}
+
 export function getAverageColour(colours) {
-  const avg = colours.reduce(
-    (acc, c) => ({ h: acc.h + c.h, s: acc.s + c.s, b: acc.b + c.b }),
-    { h: 0, s: 0, b: 0 }
-  )
   return {
-    h: avg.h / colours.length,
-    s: avg.s / colours.length,
-    b: avg.b / colours.length
+    h: circularMeanHue(colours.map(c => c.h)),
+    s: colours.reduce((sum, c) => sum + c.s, 0) / colours.length,
+    b: colours.reduce((sum, c) => sum + c.b, 0) / colours.length
   }
 }
 
