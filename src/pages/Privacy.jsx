@@ -1,6 +1,6 @@
 export default function Privacy() {
   return (
-    <div className="hue-card" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+    <div className="hue-card" style={{ overflowY: 'auto' }}>
       <div style={{ padding: '32px 28px 24px' }}>
         <a href="/" style={{ color: 'white', fontWeight: 700, fontSize: 20, textDecoration: 'none', display: 'block', marginBottom: 20 }}>hue</a>
 

@@ -8,7 +8,9 @@
   padding: 0;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   min-height: 100%;
   font-family: 'DM Sans', sans-serif;
@@ -16,35 +18,37 @@ html, body, #root {
 
 /* Desktop: dark blue bg, card floats in centre */
 body {
-  background: #0a0a14;
+  background: #0d0d0d;
 }
 
 #root {
+  background: #0d0d0d;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: #0a0a14;
 }
 
-/* The card — same on every page */
 .hue-card {
-  background: #0d0d0d;
+  background: #111116;
   width: 100%;
   max-width: 460px;
   border-radius: 24px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
 }
 
 /* Mobile: card IS the screen */
 @media (max-width: 520px) {
-  body, #root {
+
+  body,
+  #root {
     background: #0d0d0d;
-    padding: 0;
-    align-items: stretch;
+    padding: 0 !important;
+    align-items: stretch !important;
   }
 
   .hue-card {
@@ -52,6 +56,7 @@ body {
     max-width: 100%;
     width: 100%;
     min-height: 100dvh;
+    box-shadow: none;
   }
 }
 
@@ -79,8 +84,8 @@ body {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 2px solid rgba(255,255,255,0.3);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
 
@@ -89,6 +94,6 @@ body {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
 }

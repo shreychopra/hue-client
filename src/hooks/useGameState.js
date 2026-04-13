@@ -154,7 +154,6 @@ export function useGameState() {
       const amHost = socket.id === hostId
       setState(prev => ({
         ...prev,
-        // Host goes straight to lobby, participants see the offer screen
         phase: amHost ? 'LOBBY' : 'PLAY_AGAIN_OFFER',
         players,
         hostId,
@@ -164,7 +163,8 @@ export function useGameState() {
         submissions: {},
         roundScores: {},
         averageColour: null,
-        totalScores: {},
+        // totalScores and roundHistory intentionally preserved
+        // so participants can still see results on PLAY_AGAIN_OFFER screen
         error: null
       }))
     },
