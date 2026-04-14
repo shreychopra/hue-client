@@ -11,10 +11,11 @@ export default function Scoring() {
 
         {/* Explanation */}
         <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: '0 0 28px' }}>
-          each round, the game measures how far your colour is from the group's perceptual average using{' '}
+          each round, the game calculates the group's collective instinct — the average of every colour picked,
+          using a circular mean so that colours near red never accidentally average to cyan.
+          it then measures how far your colour is from that average using{' '}
           <span style={{ color: '#e5e7eb', fontWeight: 500 }}>CIE76 Delta-E</span> — a colour science standard
-          that measures how different two colours actually look to the human eye, not just how different
-          their numbers are.
+          that measures how different two colours actually look to the human eye, not just how different their numbers are.
         </p>
 
         {/* Example */}
@@ -22,13 +23,12 @@ export default function Scoring() {
           example — word: "rust"
         </p>
 
-        {/* Swatches row */}
+        {/* Swatches */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
-
           {[
-            { name: 'A', bg: '#b5451b', score: 82, de: 18 },
-            { name: 'B', bg: '#c45e2a', score: 91, de: 9 },
-            { name: 'C', bg: '#7a2d10', score: 44, de: 56 },
+            { name: 'A', bg: '#b5451b', score: 91, de: 9 },
+            { name: 'B', bg: '#c45e2a', score: 83, de: 18 },
+            { name: 'C', bg: '#7a2d10', score: 38, de: 55 },
           ].map(p => (
             <div key={p.name} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
               <p style={{ color: '#4b5563', fontSize: 11, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{p.name}</p>
@@ -42,10 +42,8 @@ export default function Scoring() {
             </div>
           ))}
 
-          {/* Arrow */}
           <div style={{ alignSelf: 'center', color: '#374151', fontSize: 16, padding: '18px 2px 0' }}>→</div>
 
-          {/* Average */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <p style={{ color: '#4b5563', fontSize: 11, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>avg</p>
             <div style={{
@@ -56,12 +54,20 @@ export default function Scoring() {
               <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, fontFamily: 'monospace' }}>group</span>
             </div>
           </div>
-
         </div>
 
         <p style={{ color: '#4b5563', fontSize: 12, margin: '0 0 28px', lineHeight: 1.5 }}>
-          B was closest to the group average — highest score. C diverged most — lowest score.
+          A was closest to the group average — highest score. C diverged most — lowest score.
         </p>
+
+        {/* Sigmoid curve explanation */}
+        <div style={{ background: '#0a0a0a', borderRadius: 12, padding: '16px 18px', marginBottom: 28 }}>
+          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>scoring curve</p>
+          <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+            scores follow a sigmoid curve — not a flat penalty. small differences from the average cost few points.
+            large differences drop off sharply. you always score something for trying.
+          </p>
+        </div>
 
         {/* Reference table */}
         <div style={{ borderTop: '1px solid #161616', paddingTop: 20, marginBottom: 24 }}>
@@ -70,10 +76,10 @@ export default function Scoring() {
           </p>
           {[
             ['identical to group average', '100 pts', 'ΔE 0'],
-            ['very close', '~85 pts', 'ΔE ~15'],
-            ['somewhat close', '~60 pts', 'ΔE ~40'],
-            ['far from average', '~20 pts', 'ΔE ~80'],
-            ['maximally different', '0 pts', 'ΔE 100+'],
+            ['very close', '~91 pts', 'ΔE 10'],
+            ['moderately close', '~50 pts', 'ΔE 30'],
+            ['quite different', '~22 pts', 'ΔE 60'],
+            ['very different', '~8 pts', 'ΔE 100'],
           ].map(([desc, pts, de]) => (
             <div key={desc} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '1px solid #111' }}>
               <span style={{ color: '#6b7280', fontSize: 13 }}>{desc}</span>
@@ -84,11 +90,6 @@ export default function Scoring() {
             </div>
           ))}
         </div>
-
-        <p style={{ color: '#4b5563', fontSize: 13, lineHeight: 1.7, margin: '0 0 28px' }}>
-          there are no right or wrong colours. the only thing that matters is how well you read the room —
-          predicting what colour the group will collectively gravitate towards.
-        </p>
 
         {/* Footer */}
         <div style={{ borderTop: '1px solid #161616', paddingTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
