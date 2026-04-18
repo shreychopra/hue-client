@@ -3,19 +3,19 @@ export default function Scoring() {
     <div className="hue-card" style={{ overflowY: 'auto' }}>
       <div style={{ padding: '32px 28px 28px' }}>
 
-        {/* Header */}
         <a href="/" style={{ color: 'white', fontWeight: 700, fontSize: 20, textDecoration: 'none', display: 'block', marginBottom: 28 }}>hue</a>
 
         <h1 style={{ color: 'white', fontSize: 24, fontWeight: 700, margin: '0 0 6px' }}>scoring</h1>
         <p style={{ color: '#4b5563', fontSize: 12, margin: '0 0 28px' }}>how points are calculated</p>
 
-        {/* Explanation */}
-        <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: '0 0 28px' }}>
-          each round, the game calculates the group's collective instinct — the average of every colour picked,
-          using a circular mean so that colours near red never accidentally average to cyan.
-          it then measures how far your colour is from that average using{' '}
-          <span style={{ color: '#e5e7eb', fontWeight: 500 }}>CIE76 Delta-E</span> — a colour science standard
-          that measures how different two colours actually look to the human eye, not just how different their numbers are.
+        <p style={{ color: '#9ca3af', fontSize: 14, lineHeight: 1.7, margin: '0 0 24px' }}>
+          everyone picks a colour independently. when time's up, the game calculates the group's
+          collective colour — the average of every pick — using a circular mean so colours near
+          red never accidentally average to cyan. it then measures how far your colour is from
+          that average using{' '}
+          <span style={{ color: '#e5e7eb', fontWeight: 500 }}>CIE76 Delta-E</span>, a colour
+          science standard that measures perceptual difference — how different two colours
+          actually look to the human eye, not just how different their numbers are.
         </p>
 
         {/* Example */}
@@ -23,7 +23,6 @@ export default function Scoring() {
           example — word: "rust"
         </p>
 
-        {/* Swatches */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
           {[
             { name: 'A', bg: '#b5451b', score: 91, de: 9 },
@@ -60,12 +59,13 @@ export default function Scoring() {
           A was closest to the group average — highest score. C diverged most — lowest score.
         </p>
 
-        {/* Sigmoid curve explanation */}
+        {/* Sigmoid explanation */}
         <div style={{ background: '#0a0a0a', borderRadius: 12, padding: '16px 18px', marginBottom: 28 }}>
           <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>scoring curve</p>
           <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
-            scores follow a sigmoid curve — not a flat penalty. small differences from the average cost few points.
-            large differences drop off sharply. you always score something for trying.
+            scores follow a sigmoid curve — not a flat penalty. small differences from the
+            average cost few points. large differences drop off sharply. you always score
+            something for trying.
           </p>
         </div>
 
@@ -91,7 +91,17 @@ export default function Scoring() {
           ))}
         </div>
 
-        {/* Footer */}
+        {/* 2 player note */}
+        <div style={{ background: '#0a0a0a', borderRadius: 12, padding: '16px 18px', marginBottom: 28 }}>
+          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>2 player games</p>
+          <p style={{ color: '#6b7280', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+            with 2 players, the group average sits between both picks. because HSB colour
+            space is not perfectly linear, each player's perceptual distance to that midpoint
+            naturally differs — so scores are different even with just 2 players. pick similar
+            colours and you both score high. pick opposite colours and you both score low.
+          </p>
+        </div>
+
         <div style={{ borderTop: '1px solid #161616', paddingTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ color: '#374151', fontSize: 12 }}>max 500 pts across 5 rounds</span>
           <a href="/" style={{ color: '#374151', fontSize: 12, textDecoration: 'none' }}>← back</a>
