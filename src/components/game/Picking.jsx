@@ -14,14 +14,8 @@ function randomHsb() {
 export default function Picking({ state, actions }) {
   const [hsb, setHsb] = useState(randomHsb)
   const [submitted, setSubmitted] = useState(false)
-  const [visible, setVisible] = useState(false)
   const hsbRef = useRef(hsb)
   const submittedRef = useRef(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100)
-    return () => clearTimeout(t)
-  }, [])
 
   useEffect(() => {
     const next = randomHsb()
@@ -67,8 +61,7 @@ export default function Picking({ state, actions }) {
     <div
       className="hue-card"
       style={{
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.4s ease, background-color 0.15s ease',
+        animation: 'fadeIn 0.3s ease forwards',
         backgroundColor: submitted ? '#0d0d0d' : hex,
         minHeight: 520,
       }}

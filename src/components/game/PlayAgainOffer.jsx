@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
 
 export default function PlayAgainOffer({ state, actions }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100)
-    return () => clearTimeout(t)
-  }, [])
-
   const sorted = Object.entries(state.totalScores).sort((a, b) => {
     const diff = b[1] - a[1]
     if (diff !== 0) return diff
@@ -23,7 +16,12 @@ export default function PlayAgainOffer({ state, actions }) {
   const medals = ['🥇', '🥈', '🥉']
 
   return (
-    <div className="hue-card" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+    <div
+      className="hue-card"
+      style={{
+        animation: 'fadeIn 0.3s ease forwards'
+      }}
+    >
 
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 24px 16px', flexShrink: 0 }}>
         <span style={{ color: '#374151', fontSize: 12 }}>hue</span>

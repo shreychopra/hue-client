@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
 
 export default function Reveal({ state, actions }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100)
-    return () => clearTimeout(t)
-  }, [])
-
   const isLastRound = state.round >= state.totalRounds
   const avgHex = state.averageColour
     ? hsbToHex(state.averageColour.h, state.averageColour.s, state.averageColour.b)
@@ -24,7 +17,12 @@ export default function Reveal({ state, actions }) {
     .sort((a, b) => b[1] - a[1])
 
   return (
-    <div className="hue-card" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+    <div
+      className="hue-card"
+      style={{
+        animation: 'fadeIn 0.3s ease forwards'
+      }}
+    >
 
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 16px' }}>

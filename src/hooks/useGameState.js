@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useSocket, getSocket, getSessionId } from './useSocket'
 
 const initialState = {
@@ -31,6 +31,7 @@ const initialState = {
 
 export function useGameState() {
   const [state, setState] = useState(initialState)
+  const isFirstConnect = useRef(true)
 
   const mergeState = (updates) => {
     setState(prev => ({ ...prev, ...updates, error: null }))
@@ -39,18 +40,17 @@ export function useGameState() {
   const socket = useSocket({
     connect: () => {
       const socket = getSocket()
-      mergeState({ connected: true, mySocketId: socket.id, error: null })
-    },
+      const sessionId = getSessionId()
 
-    reconnect: () => {
-      const socket = getSocket()
-      // Only attempt restore if we were in a room
       setState(prev => {
-        if (prev.phase !== 'LANDING' && prev.roomCode) {
-          const sessionId = getSessionId()
+        // Only attempt restore if:
+        // 1. This is a reconnection (not the first connect)
+        // 2. We were actually in a room
+        if (!isFirstConnect.current && prev.phase !== 'LANDING' && prev.roomCode) {
           socket.emit('restore_session', { sessionId })
         }
-        return { ...prev, connected: true, mySocketId: socket.id }
+        isFirstConnect.current = false
+        return { ...prev, connected: true, mySocketId: socket.id, error: null }
       })
     },
 
@@ -152,7 +152,7 @@ export function useGameState() {
       mergeState({ phase: 'PICKING' })
     },
 
-    round_reveal: ({ submissions, scores, average }) => {
+    round_reveal: ({ submissions, scores, average, word, round }) => {
       setState(prev => {
         const totalScores = { ...prev.totalScores }
         Object.keys(scores).forEach(name => {
@@ -160,7 +160,8 @@ export function useGameState() {
         })
         const roundHistory = [
           ...prev.roundHistory,
-          { word: prev.currentWord, submissions, scores, average }
+          // Use word from server payload, not prev.currentWord
+          { word: word || prev.currentWord, submissions, scores, average, round }
         ]
         return {
           ...prev,

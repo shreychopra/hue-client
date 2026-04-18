@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
 
 export default function RoundStart({ state }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100)
-    return () => clearTimeout(t)
-  }, [])
-
   return (
     <div className="hue-card" style={{ minHeight: 360, justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '24px 28px' }}>
@@ -17,8 +10,7 @@ export default function RoundStart({ state }) {
 
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '0 28px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(12px)',
-        transition: 'all 0.6s ease'
+        padding: '0 28px', animation: 'fadeIn 0.3s ease forwards'
       }}>
         <h2 style={{ fontSize: 56, fontWeight: 700, color: 'white', textAlign: 'center', lineHeight: 1.1 }}>
           {state.currentWord}

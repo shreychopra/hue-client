@@ -5,8 +5,12 @@ export default function GameOver({ state, actions }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100)
-    return () => clearTimeout(t)
+    // Use requestAnimationFrame for more reliable animation trigger
+    const frame = requestAnimationFrame(() => {
+      const t = setTimeout(() => setVisible(true), 50)
+      return () => clearTimeout(t)
+    })
+    return () => cancelAnimationFrame(frame)
   }, [])
 
   const sorted = Object.entries(state.totalScores).sort((a, b) => {
@@ -23,7 +27,12 @@ export default function GameOver({ state, actions }) {
   const medals = ['🥇', '🥈', '🥉']
 
   return (
-    <div className="hue-card" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+    <div
+      className="hue-card"
+      style={{
+        animation: 'fadeIn 0.3s ease forwards'
+      }}
+    >
 
       {/* Fixed top */}
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 24px 16px', flexShrink: 0 }}>
