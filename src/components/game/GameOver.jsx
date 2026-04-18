@@ -54,7 +54,7 @@ export default function GameOver({ state, actions }) {
                 : 'your instincts matched the group best'
               : isTie
                 ? `${tiedNames} all read the room equally well`
-                : `${winner} read the room best`}
+                : `${tiedNames} read the room best`}
           </p>
         </div>
 

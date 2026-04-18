@@ -7,6 +7,7 @@ const initialState = {
 
   // Room
   roomCode: null,
+  mode: 'classic',
   players: [],
   hostId: null,
   isHost: false,
@@ -41,12 +42,10 @@ export function useGameState() {
     connect: () => {
       const socket = getSocket()
       const sessionId = getSessionId()
+      const onInvitePath = /^\/join\//i.test(window.location.pathname)
 
       setState(prev => {
-        // Only attempt restore if:
-        // 1. This is a reconnection (not the first connect)
-        // 2. We were actually in a room
-        if (!isFirstConnect.current && prev.phase !== 'LANDING' && prev.roomCode) {
+        if (!isFirstConnect.current && prev.phase !== 'LANDING' && prev.roomCode && !onInvitePath) {
           socket.emit('restore_session', { sessionId })
         }
         isFirstConnect.current = false
@@ -62,25 +61,27 @@ export function useGameState() {
       })
     },
 
-    room_created: ({ code, players, hostId }) => {
+    room_created: ({ code, players, hostId, mode }) => {
       const socket = getSocket()
       mergeState({
         roomCode: code,
         players,
         hostId,
         isHost: socket.id === hostId,
-        phase: 'LOBBY'
+        phase: 'LOBBY',
+        mode: mode || 'classic'
       })
     },
 
-    room_joined: ({ code, players, hostId }) => {
+    room_joined: ({ code, players, hostId, mode }) => {
       const socket = getSocket()
       mergeState({
         roomCode: code,
         players,
         hostId,
         isHost: socket.id === hostId,
-        phase: 'LOBBY'
+        phase: 'LOBBY',
+        mode: mode || 'classic'
       })
     },
 
@@ -203,6 +204,10 @@ export function useGameState() {
       }))
     },
 
+    mode_changed: ({ mode }) => {
+      mergeState({ mode })
+    },
+
     game_ended_early: ({ message }) => {
       mergeState({
         phase: 'LOBBY',
@@ -265,6 +270,10 @@ export function useGameState() {
         setTimeout(() => s.connect(), 50)
       }, 200)
     }, [socket]),
+
+    setMode: useCallback((mode) => {
+      socket.emit('set_mode', { code: state.roomCode, mode })
+    }, [socket, state.roomCode]),
 
     joinNextGame: useCallback(() => {
       const s = getSocket()

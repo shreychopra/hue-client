@@ -11,9 +11,9 @@ export default function App() {
 
   if (window.location.pathname === '/privacy') return <Privacy />
   if (window.location.pathname === '/scoring') return <Scoring />
-  const joinMatch = window.location.pathname.match(/^\/join\/([A-Z0-9]{6})$/)
-  if (joinMatch) {
-    const prefilledCode = joinMatch[1]
+  const joinMatch = window.location.pathname.match(/^\/join\/([A-Z0-9]{6})$/i)
+  if (joinMatch && state.phase === 'LANDING') {
+    const prefilledCode = joinMatch[1].toUpperCase()
     return <Landing state={state} actions={actions} prefilledCode={prefilledCode} />
   }
 

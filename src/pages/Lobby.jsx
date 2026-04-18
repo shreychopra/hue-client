@@ -3,6 +3,19 @@ import { useState } from 'react'
 export default function Lobby({ state, actions }) {
   const [copied, setCopied] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  const MODE_LABELS = {
+    classic: 'Classic — mixed',
+    emotions: 'Emotions',
+    nature: 'Nature',
+    food: 'Food & taste',
+    places: 'Places',
+    abstract: 'Abstract',
+    objects: 'Objects & materials',
+    music: 'Music',
+    architecture: 'Architecture',
+    time: 'Time',
+    weather: 'Weather'
+  }
 
   const handleShareLink = () => {
     const url = `${window.location.origin}/join/${state.roomCode}`
@@ -58,6 +71,43 @@ export default function Lobby({ state, actions }) {
           {linkCopied ? '✓ link copied' : 'share invite link'}
         </button>
       </div>
+
+      {/* Mode selector — host only */}
+      {state.isHost && (
+        <div style={{ margin: '0 28px 20px' }}>
+          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, margin: '0 0 8px' }}>
+            game mode
+          </p>
+          <select
+            value={state.mode}
+            onChange={e => actions.setMode(e.target.value)}
+            style={{
+              width: '100%', padding: '10px 14px', borderRadius: 12,
+              background: '#141414', border: '1px solid #1f1f1f',
+              color: 'white', fontSize: 13, fontFamily: 'inherit', cursor: 'pointer',
+              outline: 'none'
+            }}
+          >
+            {Object.entries(MODE_LABELS).map(([value, label]) => (
+              <option key={value} value={value} style={{ background: '#141414' }}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Mode display — non-host */}
+      {!state.isHost && (
+        <div style={{ margin: '0 28px 20px' }}>
+          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, margin: '0 0 4px' }}>
+            game mode
+          </p>
+          <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>
+            {MODE_LABELS[state.mode] || 'Classic — mixed'}
+          </p>
+        </div>
+      )}
 
       {/* Players */}
       <div style={{ padding: '0 28px', flex: 1 }}>

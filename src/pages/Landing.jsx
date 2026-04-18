@@ -7,11 +7,18 @@ export default function Landing({ state, actions, prefilledCode = '' }) {
 
   const handleCreate = () => {
     if (!name.trim()) return
+    if (window.location.pathname !== '/') {
+      window.history.replaceState({}, '', '/')
+    }
     actions.createRoom(name.trim())
   }
 
   const handleJoin = () => {
     if (!name.trim() || code.length < 6) return
+    // Clean the URL if we came from an invite link
+    if (window.location.pathname !== '/') {
+      window.history.replaceState({}, '', '/')
+    }
     actions.joinRoom(code.trim().toUpperCase(), name.trim())
   }
 
@@ -19,17 +26,28 @@ export default function Landing({ state, actions, prefilledCode = '' }) {
     <div className="hue-card">
       <div style={{ flex: 1, padding: '48px 36px 24px' }}>
 
-        <h1 style={{ fontSize: 64, fontWeight: 700, color: 'white', lineHeight: 1, marginBottom: 24 }}>
+        <h1 style={{ fontSize: 64, fontWeight: 700, color: 'white', lineHeight: 1, marginBottom: 20 }}>
           hue
         </h1>
 
-        <p style={{ color: '#6b7280', fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
-          you're shown a word. pick the colour it makes you feel.
-          the closer you are to your group's instinct, the higher you score.
+        <p style={{ color: '#e5e7eb', fontSize: 15, lineHeight: 1.6, marginBottom: 16 }}>
+          a word appears. everyone picks a colour. the closer your colour is to what everyone else picked — the higher you score.
         </p>
-        <p style={{ color: '#4b5563', fontSize: 14, fontStyle: 'italic', marginBottom: 32 }}>
-          no right or wrong answers.
-        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#374151', flexShrink: 0 }} />
+            <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>no right or wrong answers — only the group's instinct</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#374151', flexShrink: 0 }} />
+            <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>5 words, 20 seconds each, 2–8 players</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#374151', flexShrink: 0 }} />
+            <p style={{ color: '#6b7280', fontSize: 13, margin: 0 }}>no accounts, no downloads — just share a link</p>
+          </div>
+        </div>
 
         {state.error && (
           <p style={{ color: '#f87171', fontSize: 13, marginBottom: 16 }}>{state.error}</p>
