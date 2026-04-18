@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { useSocket, getSocket } from './useSocket'
+import { useSocket, getSocket, getSessionId } from './useSocket'
 
 const initialState = {
   // Connection
@@ -39,7 +39,10 @@ export function useGameState() {
   const socket = useSocket({
     connect: () => {
       const socket = getSocket()
+      const sessionId = getSessionId()
       mergeState({ connected: true, mySocketId: socket.id, error: null })
+      // Attempt to restore session on every connect
+      socket.emit('restore_session', { sessionId })
     },
 
     disconnect: () => {
@@ -70,6 +73,27 @@ export function useGameState() {
         isHost: socket.id === hostId,
         phase: 'LOBBY'
       })
+    },
+
+    session_restored: ({ code, players, hostId, state: roomState, round, name }) => {
+      const socket = getSocket()
+      setState(prev => ({
+        ...prev,
+        connected: true,
+        roomCode: code,
+        players,
+        hostId,
+        isHost: socket.id === hostId,
+        myName: name,
+        phase: roomState === 'WAITING' ? 'LOBBY' : prev.phase,
+        round,
+        error: null
+      }))
+    },
+
+    session_not_found: () => {
+      // Session expired or room gone — stay on landing
+      mergeState({ phase: 'LANDING' })
     },
 
     player_joined: ({ players }) => {
@@ -189,13 +213,15 @@ export function useGameState() {
 
   const actions = {
     createRoom: useCallback((name) => {
+      const sessionId = getSessionId()
       setState(prev => ({ ...prev, myName: name, error: null }))
-      socket.emit('create_room', { name })
+      socket.emit('create_room', { name, sessionId })
     }, [socket]),
 
     joinRoom: useCallback((code, name) => {
+      const sessionId = getSessionId()
       setState(prev => ({ ...prev, myName: name, error: null }))
-      socket.emit('join_room', { code, name })
+      socket.emit('join_room', { code, name, sessionId })
     }, [socket]),
 
     startGame: useCallback(() => {

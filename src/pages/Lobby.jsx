@@ -2,6 +2,18 @@ import { useState } from 'react'
 
 export default function Lobby({ state, actions }) {
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+
+  const handleShareLink = () => {
+    const url = `${window.location.origin}/join/${state.roomCode}`
+    if (navigator.share) {
+      navigator.share({ title: 'join my hue game', url })
+    } else {
+      navigator.clipboard.writeText(url)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 2000)
+    }
+  }
   const canStart = state.players.length >= 2 && state.isHost
 
   const handleCopy = () => {
@@ -28,15 +40,23 @@ export default function Lobby({ state, actions }) {
       )}
 
       {/* Room code */}
-      <div
-        onClick={handleCopy}
-        style={{ margin: '0 28px 20px', padding: '16px 20px', background: '#141414', borderRadius: 16, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-      >
-        <div>
-          <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 4 }}>room code</p>
-          <p style={{ color: 'white', fontSize: 28, fontFamily: 'monospace', fontWeight: 700, letterSpacing: 4 }}>{state.roomCode}</p>
+      <div style={{ margin: '0 28px 20px' }}>
+        <div
+          onClick={handleCopy}
+          style={{ padding: '16px 20px', background: '#141414', borderRadius: 16, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}
+        >
+          <div>
+            <p style={{ color: '#4b5563', fontSize: 11, textTransform: 'uppercase', letterSpacing: 2, margin: '0 0 4px' }}>room code</p>
+            <p style={{ color: 'white', fontSize: 28, fontFamily: 'monospace', fontWeight: 700, letterSpacing: 4, margin: 0 }}>{state.roomCode}</p>
+          </div>
+          <span style={{ color: '#4b5563', fontSize: 12 }}>{copied ? '✓ copied' : 'tap to copy'}</span>
         </div>
-        <span style={{ color: '#4b5563', fontSize: 12 }}>{copied ? '✓ copied' : 'tap to copy'}</span>
+        <button
+          onClick={handleShareLink}
+          style={{ width: '100%', padding: '11px', borderRadius: 999, border: '1px solid #1f1f1f', background: 'transparent', color: '#6b7280', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}
+        >
+          {linkCopied ? '✓ link copied' : 'share invite link'}
+        </button>
       </div>
 
       {/* Players */}
@@ -84,6 +104,6 @@ export default function Lobby({ state, actions }) {
 }
 
 function playerColour(index) {
-  const colours = ['#60a5fa','#f472b6','#34d399','#fbbf24','#a78bfa','#fb923c','#22d3ee','#f87171']
+  const colours = ['#60a5fa', '#f472b6', '#34d399', '#fbbf24', '#a78bfa', '#fb923c', '#22d3ee', '#f87171']
   return colours[index % colours.length]
 }

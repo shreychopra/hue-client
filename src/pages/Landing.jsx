@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-export default function Landing({ state, actions }) {
-  const [mode, setMode] = useState(null)
+export default function Landing({ state, actions, prefilledCode = '' }) {
+  const [mode, setMode] = useState(prefilledCode ? 'join' : null)
   const [name, setName] = useState('')
-  const [code, setCode] = useState('')
+  const [code, setCode] = useState(prefilledCode)
 
   const handleCreate = () => {
     if (!name.trim()) return
