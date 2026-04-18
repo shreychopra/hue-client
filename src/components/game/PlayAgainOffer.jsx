@@ -16,7 +16,10 @@ export default function PlayAgainOffer({ state, actions }) {
     return best(b[0]) - best(a[0])
   })
 
-  const winner = sorted[0]?.[0]
+  const topScore = sorted[0]?.[1]
+  const tiedPlayers = sorted.filter(([, score]) => score === topScore)
+  const isTie = tiedPlayers.length > 1
+  const tiedNames = tiedPlayers.map(([name]) => name).join(' & ')
   const medals = ['🥇', '🥈', '🥉']
 
   return (
@@ -31,7 +34,9 @@ export default function PlayAgainOffer({ state, actions }) {
 
         <div style={{ marginBottom: 24 }}>
           <h2 style={{ color: 'white', fontSize: 40, fontWeight: 700, margin: 0 }}>game over</h2>
-          <p style={{ color: '#6b7280', fontSize: 14, marginTop: 6, fontWeight: 300 }}>{winner} read the room best</p>
+          <p style={{ color: '#6b7280', fontSize: 14, marginTop: 6, fontWeight: 300 }}>
+            {isTie ? `${tiedNames} all read the room equally well` : `${tiedNames} read the room best`}
+          </p>
         </div>
 
         {state.roundHistory.length > 0 && (

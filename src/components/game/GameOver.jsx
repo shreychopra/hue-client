@@ -15,9 +15,11 @@ export default function GameOver({ state, actions }) {
     const best = (n) => Math.max(0, ...state.roundHistory.map(r => r.scores[n] ?? 0))
     return best(b[0]) - best(a[0])
   })
-
-  const winner = sorted[0]?.[0]
-  const isWinner = winner === state.myName
+  const topScore = sorted[0]?.[1]
+  const tiedPlayers = sorted.filter(([, score]) => score === topScore)
+  const isTie = tiedPlayers.length > 1
+  const tiedNames = tiedPlayers.map(([name]) => name).join(' & ')
+  const isWinner = tiedPlayers.some(([name]) => name === state.myName)
   const medals = ['🥇', '🥈', '🥉']
 
   return (
@@ -37,7 +39,13 @@ export default function GameOver({ state, actions }) {
             {isWinner ? 'you won.' : 'game over'}
           </h2>
           <p style={{ color: '#6b7280', fontSize: 14, marginTop: 6, fontWeight: 300 }}>
-            {isWinner ? 'your instincts matched the group best' : `${winner} read the room best`}
+            {isWinner
+              ? isTie
+                ? 'you all read the room equally well'
+                : 'your instincts matched the group best'
+              : isTie
+                ? `${tiedNames} all read the room equally well`
+                : `${winner} read the room best`}
           </p>
         </div>
 

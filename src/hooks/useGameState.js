@@ -39,10 +39,19 @@ export function useGameState() {
   const socket = useSocket({
     connect: () => {
       const socket = getSocket()
-      const sessionId = getSessionId()
       mergeState({ connected: true, mySocketId: socket.id, error: null })
-      // Attempt to restore session on every connect
-      socket.emit('restore_session', { sessionId })
+    },
+
+    reconnect: () => {
+      const socket = getSocket()
+      // Only attempt restore if we were in a room
+      setState(prev => {
+        if (prev.phase !== 'LANDING' && prev.roomCode) {
+          const sessionId = getSessionId()
+          socket.emit('restore_session', { sessionId })
+        }
+        return { ...prev, connected: true, mySocketId: socket.id }
+      })
     },
 
     disconnect: () => {
@@ -246,9 +255,9 @@ export function useGameState() {
 
     leaveRoom: useCallback(() => {
       const s = getSocket()
-      // Tell server first, then clean up locally
+      // Clear session so restore doesn't bring them back
+      sessionStorage.removeItem('hue_session_id')
       s.emit('leave_room')
-      // Brief delay so server processes leave_room before disconnect fires
       setTimeout(() => {
         s.disconnect()
         setState(initialState)
