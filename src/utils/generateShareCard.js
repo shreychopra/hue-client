@@ -101,15 +101,20 @@ export async function generateShareCard(roundHistory, totalScores, myName) {
     y += 28
 
     // Scores
-    const medals = ['🥇', '🥈', '🥉']
+    const rankSymbols = ['#1', '#2', '#3']
     const sorted = Object.entries(totalScores).sort((a, b) => b[1] - a[1])
 
     for (const [i, [name, score]] of sorted.entries()) {
         const isMe = name === myName
+        const rank = rankSymbols[i] || `#${i + 1}`
+
+        ctx.fillStyle = '#4b5563'
+        ctx.font = '400 11px monospace'
+        ctx.fillText(rank, 36, y + 16)
 
         ctx.fillStyle = isMe ? 'white' : '#9ca3af'
         ctx.font = `${isMe ? '600' : '400'} 15px -apple-system, sans-serif`
-        ctx.fillText(`${i < 3 ? '' : `${i + 1}.`} ${name}${isMe ? ' ·' : ''}`, 36, y + 16)
+        ctx.fillText(`${name}${isMe ? ' ·' : ''}`, 68, y + 16)
 
         ctx.fillStyle = 'white'
         ctx.font = '600 15px monospace'
@@ -136,7 +141,15 @@ export async function generateShareCard(roundHistory, totalScores, myName) {
     const maxW = ctx.measureText(maxStr).width
     ctx.fillText(maxStr, W - 36 - maxW, y + 16)
 
-    return canvas
+    // Calculate winner text for share message
+    const sortedForWinner = Object.entries(totalScores).sort((a, b) => b[1] - a[1])
+    const topScore = sortedForWinner[0]?.[1]
+    const winners = sortedForWinner.filter(([, s]) => s === topScore).map(([n]) => n)
+    const winnerText = winners.length > 1
+        ? `${winners.join(' & ')} read the room best`
+        : `${winners[0]} read the room best`
+
+    return { canvas, winnerText }
 }
 
 function roundedRect(ctx, x, y, w, h, r) {

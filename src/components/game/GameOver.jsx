@@ -24,20 +24,23 @@ export default function GameOver({ state, actions }) {
   const handleShare = async () => {
     setSharing(true)
     try {
-      const canvas = await generateShareCard(state.roundHistory, state.totalScores, state.myName)
+      const { canvas, winnerText } = await generateShareCard(
+        state.roundHistory,
+        state.totalScores,
+        state.myName
+      )
 
       canvas.toBlob(async (blob) => {
         const file = new File([blob], 'hue-results.png', { type: 'image/png' })
 
-        // Try native share (mobile) first
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
-            title: 'my hue results',
-            text: 'played hue — no right or wrong answers',
-            files: [file]
+            title: 'hue',
+            text: `played hue — ${winnerText}`,
+            files: [file],
+            url: 'https://playhue.vercel.app'
           })
         } else {
-          // Fallback: download
           const url = URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
