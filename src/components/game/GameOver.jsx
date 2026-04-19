@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { hsbToHex } from '../../utils/colourConvert'
+import { generateShareCard } from '../../utils/generateShareCard'
 
 export default function GameOver({ state, actions }) {
   const [visible, setVisible] = useState(false)
+  const [sharing, setSharing] = useState(false)
 
   useEffect(() => {
     // Use requestAnimationFrame for more reliable animation trigger
@@ -19,6 +21,37 @@ export default function GameOver({ state, actions }) {
     const best = (n) => Math.max(0, ...state.roundHistory.map(r => r.scores[n] ?? 0))
     return best(b[0]) - best(a[0])
   })
+  const handleShare = async () => {
+    setSharing(true)
+    try {
+      const canvas = await generateShareCard(state.roundHistory, state.totalScores, state.myName)
+
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'hue-results.png', { type: 'image/png' })
+
+        // Try native share (mobile) first
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: 'my hue results',
+            text: 'played hue — no right or wrong answers',
+            files: [file]
+          })
+        } else {
+          // Fallback: download
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'hue-results.png'
+          a.click()
+          URL.revokeObjectURL(url)
+        }
+        setSharing(false)
+      }, 'image/png')
+    } catch (err) {
+      console.error('Share failed:', err)
+      setSharing(false)
+    }
+  }
   const topScore = sorted[0]?.[1]
   const tiedPlayers = sorted.filter(([, score]) => score === topScore)
   const isTie = tiedPlayers.length > 1
@@ -127,11 +160,25 @@ export default function GameOver({ state, actions }) {
       <div style={{ padding: '16px 24px', borderTop: '1px solid #161616', display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }} className="safe-bottom">
         {state.isHost ? (
           <>
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              style={{ ...btnStyle('outline'), color: sharing ? '#374151' : '#9ca3af' }}
+            >
+              {sharing ? 'generating...' : 'share results'}
+            </button>
             <button onClick={actions.playAgain} style={btnStyle('filled')}>play again</button>
             <button onClick={actions.leaveRoom} style={btnStyle('outline')}>exit to home</button>
           </>
         ) : (
           <>
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              style={{ ...btnStyle('outline'), color: sharing ? '#374151' : '#9ca3af' }}
+            >
+              {sharing ? 'generating...' : 'share results'}
+            </button>
             <div style={{ ...btnStyle('outline'), textAlign: 'center', color: '#4b5563', cursor: 'default' }}>waiting for host...</div>
             <button onClick={actions.leaveRoom} style={btnStyle('outline')}>exit to home</button>
           </>
