@@ -14,7 +14,13 @@ export default function Lobby({ state, actions }) {
     music: 'Music',
     architecture: 'Architecture',
     time: 'Time',
-    weather: 'Weather'
+    weather: 'Weather',
+    science: 'Science',
+    mythology: 'Mythology & legend',
+    colours: 'Colours',
+    textures: 'Textures & surfaces',
+    cosmos: 'Cosmos & space',
+    human: 'The human experience'
   }
 
   const handleShareLink = () => {
